@@ -1,0 +1,94 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页,
+			
+			
+		{"path": "pages/index/index","style": {"navigationBarTitleText": "首页"}},
+		{"path": "pages/category/category","style": {"navigationBarTitleText": "全部分类"}},
+		{"path": "pages/categorylist/categorylist","style": {"navigationBarTitleText": "分类详情"}},
+		{"path": "pages/communityDetail/communityDetail","style": {"navigationBarTitleText": "详情"}},
+		{"path": "pages/goods/goods","style": {"navigationBarTitleText": "产品"}},
+		{"path": "pages/publish/publish","style": {"navigationBarTitleText": "发朋友圈"}},
+		{"path": "pages/order/order","style": {"navigationBarTitleText": "我的订单"}},
+		{"path": "pages/my/my","style": {"navigationBarTitleText": "用户中心"}},
+		{"path": "pages/login/login","style": {"navigationBarTitleText": "登录"}},
+	
+		{"path": "pages/qaAsk/qaAsk","style": {"navigationBarTitleText": "提问"}},
+			
+		{"path": "pages/save/save","style": {"navigationBarTitleText": "保存"}},
+		{"path": "pages/community/community","style": {"navigationBarTitleText": "社区"}},
+		{"path": "pages/moneyhistory/moneyhistory","style": {"navigationBarTitleText": "现金流"}},
+
+		{"path": "pages/qa/qa","style": {"navigationBarTitleText": "问答"}},
+
+		{"path": "pages/cart/cart","style": {"navigationBarTitleText": "购物车"}},
+		
+	
+		{"path": "pages/userfav/userfav","style": {"navigationBarTitleText": "最受用户欢迎产品"}},
+		{"path": "pages/monthlyNew/monthlyNew","style": {"navigationBarTitleText": "每月新品"}},
+		{"path": "pages/groupbuy/groupbuy","style": {"navigationBarTitleText": "拼团"}},
+			
+	
+
+	    {"path": "pages/timeline/timeline","style": {"navigationBarTitleText": "朋友圈"}},
+
+		{"path": "pages/edituser/edituser","style": {"navigationBarTitleText": "发朋友圈"}},
+		
+		{"path": "pages/feedback/feedback","style": {"navigationBarTitleText": "反馈"}},
+		{"path": "pages/collectlist/collectlist","style": {"navigationBarTitleText": "我的收藏"}},
+		{"path": "pages/addressSelect/addressSelect","style": {"navigationBarTitleText": "选择地址"}},
+		{"path": "pages/addaddress/addaddress","style": {"navigationBarTitleText": "增加地址"}},
+		{"path": "pages/address/address","style": {"navigationBarTitleText": "我的地址"}},
+		{"path": "pages/search/search","style": {"navigationBarTitleText": "搜索"}},
+		
+		{"path": "pages/logs/logs","style": {"navigationBarTitleText": "日志"}}
+		
+	   
+    ],
+	
+// 	"tabBar": {
+// 		"color": "#2c2c2c",
+// 		"selectedColor": "#fc5c63",
+// 		"backgroundColor": "#ffffff",
+// 		"list": [
+// 			{
+// 				"pagePath": "pages/index/index",
+// 				"iconPath": "static/images/ic_menu_choice_nor.png",
+// 				"selectedIconPath": "static/images/ic_menu_choice_pressed.png",
+// 				"text": "首页"
+// 			},
+// 			{
+// 				"pagePath": "pages/category/category",
+// 				"iconPath": "static/images/ic_menu_sort_nor.png",
+// 				"selectedIconPath": "static/images/ic_menu_sort_pressed.png",
+// 				"text": "分类"
+// 			},
+// 			{
+// 				"pagePath": "pages/timeline/timeline",
+// 				"iconPath": "static/images/ic_menu_topic_nor.png",
+// 				"selectedIconPath": "static/images/ic_menu_topic_pressed.png",
+// 				"text": "朋友圈"
+// 			},
+// 			{
+// 				"pagePath": "pages/cart/cart",
+// 				"iconPath": "static/images/ic_menu_shoping_nor.png",
+// 				"selectedIconPath": "static/images/ic_menu_shoping_pressed.png",
+// 				"text": "购物车"
+// 			},
+// 			{
+// 				"pagePath": "pages/my/my",
+// 				"iconPath": "static/images/ic_menu_me_nor.png",
+// 				"selectedIconPath": "static/images/ic_menu_me_pressed.png",
+// 				"text": "我的"
+// 			}
+// 		]
+// 	},
+	"globalStyle": {
+		"navigationStyle": "custom", //取消系统导航栏，使用自己的导航栏
+
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "tokwork",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#f5f7fa"
+	}
+
+}
