@@ -5,19 +5,10 @@
 				<block slot="content">分类导航</block>
 			</cu-custom>
 		
-		<!-- 搜索 -->
-			<view class="cu-bar search bg-white">
-				<view class="search-form round">
-					<text class="cuIcon-search"></text>
-					<input @click="toSearch" :adjust-position="false" type="text" placeholder="深海洗颜泥" confirm-type="search"></input>
-				</view>
-				<view class="action">
-					<button class="cu-btn bg-green shadow-blur round">搜索</button>
-				</view>
-			</view>
-		<!-- 搜索	 -->
 		
+		<!-- Vertical Box -->
 		<view class="VerticalBox">
+			<!-- Category names -->
 			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 0upx)">
 				<view class="cu-item" @tap="selectitem(item.id,index)" :class="index==tabCur?'text-green cur':''" v-for="(item,index) in listData" :key="index" 
 				 :data-id="index">
@@ -25,9 +16,14 @@
 				</view>
 			</scroll-view>
 			
+			
+			<!-- Subcategory details  -->
 			<scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 0upx)"
 			 :scroll-into-view="'main-'+mainCur" @scroll="VerticalMain">
 				<view class="padding-top padding-lr"  v-for="(item1,index1) in detailData.subcategories" :key="index1" :id="'main-'+index">
+					
+					<!-- <p>{{getListData(item1.id)}}</p> -->
+					<!-- Subcategory tab -->
 					<view class="cu-bar solid-bottom bg-white">
 						<view class="action">
 							<text class="cuIcon-title text-green">
@@ -36,42 +32,22 @@
 						</view>
 					</view>
 			
-					<view class="cu-list menu-avatar" :key='index1' @click="toCategory(item1.id)">
+					<!-- Subcategory details -->
+					<view class="cu-list menu-avatar" :key='index1' @click="toCategory(item1.id, item1.name)">
 						<view class="cu-item">
-							<view class="cu-avatar radius xl" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
 							<view class="content">
 								<view class="text-grey">{{item1.name}}</view>
 								<view class="text-gray text-sm flex">
 									<text class="text-cut">
-										<text class="cuIcon-infofill text-red  margin-right-xs"></text>
-										我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。我已天理为凭，踏入这片荒芜，不再受凡人的枷锁遏制。
-									</text> </view>
+										<!-- <text class="cuIcon-infofill text-red  margin-right-xs"></text> -->
+									</text> 
+								</view>
 							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cu-tag  bg-grey sm">5</view>
+							<view v-if="listDataNum[index]" class="action">
+								<view class="text-grey text-xs"></view>
+								<!-- <view class="cu-tag  bg-grey sm">{{listDataNum[index1].length}}</view> -->
 							</view>
 						</view>
-						
-				<!-- 		<view class="cu-item">
-							<view class="cu-avatar radius xl" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Taric.png);">
-								<view class="cu-tag badge">99+</view>
-							</view>
-							<view class="content">
-								<view class="text-grey">
-									<text class="text-cut">彩妆</text>
-								</view>
-								<view class="text-gray text-sm flex">
-									<text class="text-cut">
-										hah
-									</text>
-								</view>
-							</view>
-							<view class="action">
-								<view class="text-grey text-xs">22:20</view>
-								<view class="cuIcon-notice_forbid_fill text-gray"></view>
-							</view>
-						</view> -->
 						
 					</view>
 				</view>
@@ -89,12 +65,15 @@
 		data() {
 			return {
 				list: [],
-				listData:[],
+				listData:[],  // Category name
 				tabCur: 0,
 				mainCur: 0,
 				verticalNavTop: 0,
 				load: true,
-				detailData:[]
+				detailData:[],
+				listCur: 0,
+				listDataNum: {},
+				token: "vuh1yve09x8d4uo4oly1ofab1suy5gdb",
 			};
 		},
 		onLoad() {
@@ -103,50 +82,47 @@
 				mask: true
 			});
 			
+			// Get category list
 			this.getCategories()
-			
-			this.list = fakeCategories
-			this.listCur = this.list[0];
 		},
+		
 		onReady() {
 			uni.hideLoading()
 		},
+		
+		
 		methods: {
-			 async selectitem(id, index) {
-				 this.tabCur =index;
-				  // this.nowIndex = index; // 这是把当前浏览的大分类标红
-				  this.detailData = this.listData.filter( x => x.id === id )[0] // 过滤出当前点击的那个子分类
-				},
-			async getCategories(){//请求分类数据
+			async selectitem(id, index) {//过滤出当前点击的那个子分类
+				this.tabCur =index;
+				
+				this.detailData = this.listData.filter( x => x.id === id )[0] // 过滤出当前点击的那个子分类
+				console.log(index)
+
+				let promises = this.detailData.subcategories.map( x => {
+					return post('/catalogapi/getCategoryProducts', {"param":{"id":x.id,"token":this.token}}).then()
+				})
+				// console.log(promises)
+				Promise.all(promises).then(r => {
+					this.listDataNum[index] = r}
+					);
+				
+				// console.log(this.listDataNum[index]);
+			},
+			
+			async getCategories(){// 通过Top Menu api获取分类信息，请求分类数据
 				const data = await post("/catalogapi/topMenu"); // 拿到全部分类信息
-				  console.log('11111111'+JSON.stringify(data))
 				this.listData = data; // 拿到啦
 				
-				// Parse.Cloud.run('getCategories').then( r => {
-				// 	console.log('' + JSON.stringify(r));
-				// 	this.list = r.children_data.map( (x,index) => {
-				// 		x.bid = index
-				// 		return x
-				// 	})
-				// }).catch( e => {
-				// 	console.log(e);
-				// }
-				// )
-				// 
-				
-     
+				// console.log(this.listData)
+			},
 
-			},
-			toCategory(id){
+			toCategory(id, name){
 				uni.navigateTo({
-					url:'../categorylist/categorylist?id='+id
-				})
+					url:'../categorylist/categorylist?id=' + id + '&name='+ name
+				})	
 			},
-			// TabSelect(e) {
-			// 	
-			// 	this.mainCur = e.currentTarget.dataset.id;
-			// 	this.verticalNavTop = (e.currentTarget.dataset.id - 1) * 50
-			// },
+
+			
 			VerticalMain(e) {
 				// #ifdef MP-ALIPAY
 				   return false  //支付宝小程序暂时不支持双向联动 

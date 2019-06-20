@@ -40,6 +40,10 @@
   </div>
 </template>
 
+
+
+
+
 <script>
 import { get, getStorageOpenid } from "../../utils";
 export default {

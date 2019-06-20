@@ -1,170 +1,83 @@
 <template>
-  <div class="cart">
-		
-		<cu-custom :isBack="true" bgColor="my_header_background text-white">
-			<block slot="backText">返回</block>
-			<block slot="content">购物车</block>
-		</cu-custom>
-		
-		<div class="cu-list menu solid-bottom">
-			<view class="cu-item" @tap="addressbook">
-					<view class="action margin-right  text-xl">
-						<text class="cuIcon-location"></text>
+		<div class="cart">
+				
+				<!-- Header -->
+				<cu-custom :isBack="true" bgColor="my_header_background text-white">
+						<block slot="backText" @click="jump('index')">返回</block>
+						<block slot="content">购物车</block>
+				</cu-custom>
+				
+				<!-- Products info -->
+				<div v-modle="cart" v-for="(x,index) in cart" :key="index" class="cartlist">
+					<view class="cu-list menu-avatar">
+						<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" >
+							<view class="cu-avatar radius xl" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ 1 +'.jpg)'}]"></view>
+						
+							<view class="content">
+								<view class="text-gray text-sm">
+									<text class=" text-red  margin-right-xs"></text>{{x.detail.name}}</view>
+								<view class="text-grey text-sm"></view>
+							
+								<view class="text-gray text-sm">
+									<text class=" text-red  margin-right-xs"></text>套餐选择: {{x.pkgName}}</view>
+								<view class="text-grey text-sm"></view>
+							</view>
+							
+							<view>
+								<view class="padding flex flex-wrap justify-between align-center bg-white">
+									<button @click="deleteItem(x.pkg)" class="cu-btn round">删除</button>
+								</view>
+								
+								<view class="text-gray text-sm">
+									<text class=" text-red  margin-right-xs"></text>¥ {{x.price}}</view>
+								<view class="text-grey text-sm"></view>
+							</view>
+							
+						</view>
 					</view>
 				
-					<view class="content padding-tb-sm">
-						<view>
-							<text class=" text-blue margin-right-xs"></text> Mr 雷</view>
-						<view class="text-gray  text-left">
-							<text class=" margin-right-xs"></text> 美国纽约上东区老白汇大街美国纽约上东区老白汇大街美国纽约上东区老白汇大街</view>
+					<view class="cu-bar  bg-white padding-lr solid margin-bottom">
+						<text>购买数量</text>
+						<view class="add flex align-center">
+							<button type="default" @click="updateQuantity(x.pkg, -1)" class="padding-lr text-bold text-xl">-</button>
+							<text class="margin-lr">{{x.quantity}}</text>
+							<button type="default" @click="updateQuantity(x.pkg, 1)" class="padding-lr text-bold text-xl">+</button>
+						</view>
 					</view>
-					<view class="action">
-						
-						<text class="cuIcon-right"></text>
-						
-					</view>
-			</view>
-		</div>
-		
-		
-		
-			<!-- 宣传标语 -->
-			<!-- <view class="cu-list col-3 grid " >
-				<view class="cu-item" >
-					<view class="cuIcon-location text-green">
-						
-					</view>
-					<text>纽约直邮</text>
-				</view>
-				<view class="cu-item " >
-					<view class="cuIcon-redpacket text-green">
-						
-					</view>
-					<text>价格最优</text>
-				</view>
-				<view class="cu-item ">
-					<view class="cuIcon-appreciate text-green">
-						
-					</view>
-					<text>100%正品</text>
-				</view>
-			</view> -->
-			
-			<!-- 宣传标语 -->
-			
-			
-		
-  
-		
-		
-		
-    <div class="cartlist">
-			
-			<!-- 购物车产品 -->
-			<view class="cu-list menu-avatar">
-				<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" >
-					<view class="cu-avatar radius xl" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ 1 +'.jpg)'}]"></view>
-					
-					<view class="content">
-						<view class="text-gray text-sm">
-							<text class=" text-red  margin-right-xs"></text> ¥ 23</view>
-						<view class="text-grey text-sm">
-							黑人（DARLIE）双重薄荷清新口气牙膏225g 防蛀固齿防口气 (新老包装随机发放）</view>
-						
-					</view>
-					
-				</view>
-			</view>
-			
-			<div class="cu-bar  bg-white padding-lr solid margin-bottom">
-				<text>购买数量</text>
-				<div class="add flex align-center">
-					<button type="default" class="padding-lr text-bold text-xl">-</button>
-					<text class="margin-lr">1</text>
-					<button type="default" class="padding-lr text-bold text-xl">+</button>
 				</div>
-			</div>
-			
-			<view class="cu-list bg-white menu margin-top solid-top">
-				<view class="cu-item " >
-						<view class="content">
-							<image src="/static/wechat.svg" class="png" mode="aspectFit"></image>
-							<text class="text-grey">微信支付</text>
+				
+				
+				<view class="cu-list bg-white menu margin-top solid-top">
+					<view class="cu-item " >
+							<view class="content">
+								<image src="/static/wechat.svg" class="png" mode="aspectFit"></image>
+								<text class="text-grey">微信支付</text>
+							</view>
+							
+							<text class="cuIcon-check"></text>
 						</view>
 						
-						<text class="cuIcon-check"></text>
-					</view>
-					
-					<view class="cu-item" :class="menuArrow?'arrow':''">
-						<view class="content">
-							<image src="/static/alipay.svg" class="png" mode="aspectFit"></image>
-							<text class="text-grey">支付宝支付</text>
+						<view class="cu-item" :class="menuArrow?'arrow':''">
+							<view class="content">
+								<image src="/static/alipay.svg" class="png" mode="aspectFit"></image>
+								<text class="text-grey">支付宝支付</text>
+							</view>
 						</view>
-					</view>
-			</view>
-			<!-- 购物车产品 -->
-			
-			
-    
-     <!-- <div class="item" @touchstart="startMove" @touchmove="deleteGoods" @touchend="endMove" :data-index="index" v-for="(item,index) in listData"
-        :key="index">
-        <div class="con" :style="item.textStyle">
-          <div class="left">
-            <div class="icon" @click="changeColor(index,item.goods_id)" :class="[ Listids[index] ? 'active' : '',{active:allcheck}]"></div>
-            <div class="img">
-              <img :src="item.imgurl" alt="">
-            </div>
-            <div class="info">
-              <p>{{item.name}}</p>
-              <p>￥{{item.price}}</p>
-            </div>
-          </div>
-          <div class="right">
-            <div class="num">
-              x{{item.number}}
-            </div>
-          </div>
-        </div>
-
-        <div @click="delGoods(item.id,index)" class="delete" :style="item.textStyle1">
-          <div>
-            删除
-          </div>
-        </div>
-      </div> -->
-			
-			
-    </div>
-		
-    <div v-if="false" class="nogoods">
-      <img src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/noCart-a8fe3f12e5.png" alt="">
-    </div>
-		
-   <!-- <div class="fixed">
-      <div @click="allCheck" :class="{active:allcheck}" class="left">
-        全选({{isCheckedNumber}})
-      </div>
-      <div class="right">
-        <div>
-          ￥{{allPrise}}
-        </div>
-        <div @click="orderDown">下单</div>
-      </div>
-    </div> -->
-		
-		
-	
-			
-			<view class="cu-bar bg-white tabbar border shop foot">
-					<view class="margin-right" style="text-align: right; width: 50%;"> 实付款:<text class="margin-left text-xl">¥179 </text>  </view>
+				</view>
 				
-				<view class="bg-red submit">立即支付</view>
-			</view>
 		
-  </div>
+				<!-- 支付底栏 -->
+				<view class="cu-bar bg-white tabbar border shop foot">
+						<view class="margin-right" style="text-align: right; width: 50%;"> 实付款:<text class="margin-left text-xl">¥ {{totalPrice}} </text> </view>
+					
+					<view class="bg-red submit">立即支付</view>
+				</view>
+			
+		</div>
 </template>
 
 <script>
+	import { mapState } from 'vuex'
   import {
     get,
     post,
@@ -173,43 +86,26 @@
   } from "../../utils";
   export default {
     onShow() {
-      // this.openId = getStorageOpenid();
-      // this.getListData();
+		this.getTotalPrice();
     },
+	
+	
     created() {},
+	
     data() {
       return {
-				modalName: null,
-				gridCol: 3,
-				gridBorder: false,
-				menuBorder: false,
-				menuArrow: false,
-				menuCard: false,
-				skin: false,
-				listTouchStart: 0,
-				listTouchDirection: null,
+		modalName: null,
+		gridCol: 3,
+		gridBorder: false,
+		menuBorder: false,
+		menuArrow: false,
+		menuCard: false,
+		skin: false,
+		listTouchStart: 0,
+		listTouchDirection: null,
         openId: "",
         allcheck: false,
-        listData: [
-					{
-						name:'洁面乳哦',
-						url:'',
-						price:23,
-						number:2
-					},
-						{
-						name:'洁面乳哦',
-						url:'',
-						price:23,
-						number:2
-					},
-						{
-						name:'洁面乳哦',
-						url:'',
-						price:23,
-						number:2
-					}
-				],
+        listData: [],
         Listids: [],
         userInfo: {},
         tranX: 0,
@@ -221,11 +117,54 @@
         moveEndX: "",
         moveEndY: "",
         X: 0,
-        Y: ""
+        Y: "",
+		pkgName: '',
+		isRouterAlive: true,    // Used to reload page
+		totalPrice: 0,
       };
     },
+	
     components: {},
     methods: {
+			// Update quantity in the cart
+			updateQuantity(pkg, changes) {
+				this.$store.commit('updateCart', {pkg: pkg, changes: changes});
+				this.reload();
+			},
+			
+			// Delete item in the cart
+			deleteItem(pkg) {
+				this.$store.commit('deleteFromCart', pkg);
+				this.reload();
+			},
+			
+			getTotalPrice() {
+				var price = 0
+				var quantity = 0;
+				for (var key in this.cart) {
+					price += this.cart[key].price;
+					quantity += this.cart[key].quantity;
+				}
+				
+				console.log("Total price = " + price);
+				console.log("Total quantity = " + quantity);
+				this.totalPrice = price;
+			},
+		
+			// Navigate to certain page
+			jump(pageName) {
+				if (pageName === 'my') {
+					this.login()
+				}
+				
+				uni.navigateTo({
+					url: `../${pageName}/${pageName}`,
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+			
 			addressbook(){
 				uni.navigateTo({
 					url:'../addressSelect/addressSelect',
@@ -250,6 +189,16 @@
 				}
 				this.listTouchDirection = null
 			},
+			
+			// Used to reload page
+			reload () {
+				this.isRouterAlive = false
+				this.$nextTick(function () {
+					this.isRouterAlive = true
+				})
+			},
+			
+			
 			
 			
       initTextStyle() {
@@ -389,22 +338,6 @@
         }
         this.listData = data.data;
       },
-      allCheck() {
-        //先清空
-        this.Listids = [];
-        if (this.allcheck) {
-          this.allcheck = false;
-        } else {
-          console.log("选择全部");
-
-          this.allcheck = true;
-          //循环遍历所有的商品id
-          for (let i = 0; i < this.listData.length; i++) {
-            const element = this.listData[i];
-            this.Listids.push(element.goods_id);
-          }
-        }
-      },
       change(e) {},
       changeColor(index, id) {
         if (this.Listids[index]) {
@@ -414,31 +347,31 @@
         }
       }
     },
+
+	
     computed: {
-      isCheckedNumber() {
-        let number = 0;
-        for (let i = 0; i < this.Listids.length; i++) {
-          if (this.Listids[i]) {
-            number++;
-          }
-        }
-        if (number == this.listData.length && number != 0) {
-          this.allcheck = true;
-        } else {
-          this.allcheck = false;
-        }
-        return number;
-      },
-      allPrise() {
-        var Prise = 0;
-        for (let i = 0; i < this.Listids.length; i++) {
-          if (this.Listids[i]) {
-            Prise = Prise + this.listData[i].retail_price * this.listData[i].number;
-          }
-        }
-        return Prise;
-      }
-    }
+		...mapState(['cart']),
+		
+		cart: {
+			get() {
+				return this.$store.state.cart
+			},
+			set(v) {
+			// 使用vuex中的mutations中定义好的方法来改变
+				this.$store.commit('updateCart', v)
+			}
+		},
+	
+		allPrise() {
+			var Prise = 0;
+			for (let i = 0; i < this.Listids.length; i++) {
+				if (this.Listids[i]) {
+					Prise = Prise + this.listData[i].retail_price * this.listData[i].number;
+				}
+			}
+			return Prise;
+		}
+    },
   };
 
 </script>

@@ -7,9 +7,10 @@ const state = {
 			
 		},
 		hotItems:[],
-		openId: ''
+		openId: '',
 		
-		
+		// Items in the shopping cart
+		cart:{},
 	}
 
 export default state

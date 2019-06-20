@@ -4,7 +4,7 @@
 		<view class="padding flex flex-direction margin-top">
 			<button open-type="getUserInfo" @getuserinfo="getUserInfo"   class="cu-btn cuIcon-weixin bg-gradual-green margin-tb-sm lg ">
 				<text class="margin-left-sm text-white">微信登录</text>
-				</button>
+			</button>
 		</view>
 		
 			
@@ -41,7 +41,8 @@ export default {
 				let myAuthData = {
 					// 根据具体的类型，决定该字段需要填写哪些参数，比如微信需要填写id（值应当是微信的openid）和access_token
 					id: res.openid,
-					access_token: r
+					access_token: r,
+
 				};
 				let newUser = new Parse.User();
 				newUser
@@ -71,7 +72,7 @@ export default {
 
 		getUserInfo(r) {
 			let that = this;
-			// console.log(r.mp.detail);
+			console.log(r.mp.detail);
 			let wxProfile = r.mp.detail.userInfo; // 等下更新用户信息用
 			console.log('拿到用户信息' + JSON.stringify(r.mp.detail.userInfo));
 			

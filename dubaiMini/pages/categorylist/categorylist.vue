@@ -2,12 +2,12 @@
 	<div class="categoryList">
 		<cu-custom :isBack="true" bgColor="my_header_background text-white">
 			<block slot="backText">返回</block>
-			<block slot="content">分类导航</block>
+			<block slot="content">{{categoryName}}</block>
 		</cu-custom>
 
 		<!-- 工具栏 -->
 		
-		<div class="cu-bar padding-lr ">
+		<!-- <div class="cu-bar padding-lr ">
 			<div class="item">
 				评论<text class=" margin-left-xs"></text>
 			</div>
@@ -18,13 +18,13 @@
 				筛选<text class="cuIcon-filter margin-left-xs"></text>
 			</div>
 			
-		</div>
+		</div> -->
 		<!-- 工具栏 -->
 		
 		
 		
 		<!-- 过滤器 -->
-		<view class="cu-modal drawer-modal justify-end" :class="modalName=='DrawerModalR'?'show':''" @tap="hideModal">
+		<!-- <view class="cu-modal drawer-modal justify-end" :class="modalName=='DrawerModalR'?'show':''" @tap="hideModal">
 			<view class="cu-dialog basis-xl" @tap.stop="" :style="[{top:CustomBar+'px',height:'calc(100vh - ' + CustomBar + 'px)'}]">
 				
 				<view class="cu-list menu text-left">
@@ -78,20 +78,22 @@
 				
 				
 			</view>
-		</view>
+		</view> -->
 		<!-- 过滤器 -->
 		
 
 		<!-- #ifndef MP-BAIDU -->
 		<scroll-view class="list"  scroll-y @scrolltolower="loadMore(idx)" >
 			<view class="bg-white padding">
-				<view class="grid margin-bottom text-center" v-for="(item,index) in 1" :key="index" :class="col-2">
+				<view class="grid margin-bottom text-center">
+					<!-- <p>{{printdata(item.sku)}}</p> -->
 					<view style='width:47%' class="margin-tb-sm"  :class="indexs%2==0?'margin-right-sm':'margin-left-sm'" v-for="(item,indexs) in goodsList" @click="goodsDetail(item.id)" :key="indexs">
 						<image :src="item.imageurl" alt="" mode="aspectFill"></image>
 						<p>{{item.name}}</p>
 					</view>
 				</view>
 			</view>
+			
 			<!-- <view class="bg-white padding" >
 				<view class="grid margin-bottom text-center col-2">
 					<SingleItem  v-for="(item,indexs) in goodsList" 
@@ -111,6 +113,7 @@
 <script>
 import { getMagento, itemPath, post } from '../../utils';
 import SingleItem from '../../components/item.vue'
+
 export default {
 	components:{
 		SingleItem
@@ -119,45 +122,39 @@ export default {
 	mounted() {
 		//获取页面传的参数
 		this.categoryId = this.$root.$mp.query.id;
-		// this.getAllData();
+		this.categoryName = this.$root.$mp.query.name;
 		this.getListData()
 	},
 	data() {
 		return {
+			url: ';',
 			CustomBar : this.CustomBar,
 			loadingText:'加载',
-			ItemDate:{
-					title:'超级洗面奶无敌价格到底几点到点对点的的',
-					price:'45',
-					label:'促销',
-					groupPrice:'23',
-					brand:'欧莱雅'
-			},
-			
-
+			ItemDate:{},
 			itemPath: itemPath,
 			categoryId: '',
+			categoryName: '',
 			nowIndex: 0,
 			goodsList: [],
 			navData: [],
 			currentNav: {},
+			token: "vuh1yve09x8d4uo4oly1ofab1suy5gdb",
 			modalName: null,
 		};
 	},
 	onLoad() {
 	},
+	
+	
 	methods: {
 		showModal(e) {
 			this.modalName = e.currentTarget.dataset.target
 		},
+		
 		hideModal(e) {
 				this.modalName = null
 		},
-		// goDetail(){
-		// 	uni.navigateTo({
-		// 		url:'../goods/goods'
-		// 	})
-		// },
+
 		tabSelect(e) {
 			this.TabCur = e.currentTarget.dataset.id;
 			this.scrollLeft = (e.currentTarget.dataset.id - 1) * 60;
@@ -165,17 +162,16 @@ export default {
 
 		async getListData(index, id) { //获取子菜单数据
 			this.nowIndex = index;
-			const listdata = await post('/catalogapi/getCategoryProducts', {"param":{"id":this.categoryId,"token":"vuh1yve09x8d4uo4oly1ofab1suy5gdb"}});
-			
+			const listdata = await post('/catalogapi/getCategoryProducts', {"param":{"id":this.categoryId,"token":this.token}});
 			this.goodsList = listdata;
-			console.log('11111111'+this.goodsList)
-			this.currentNav = listdata.currentNav;
+			
 			
 			//需要让导航滚动到可见区域
 			if (this.nowIndex > 4) {
 				this.scrollLeft = this.nowIndex * 60;
 			}
 		},
+		
 		async getAllData() {
 			const navdata = await get(`/categories/${this.categoryId}/products`);
 			console.log('拿到列表页全部产品SKU');
@@ -213,16 +209,21 @@ export default {
 					console.log(e);
 				});
 
-			//       const listdata = await get("/goods/goodsList", {
-			//         categoryId: this.categoryId
-			//       });
-			//       this.goodsList = listdata.data;
+			      const listdata = await get("/goods/goodsList", {
+			        categoryId: this.categoryId
+			      });
+			      this.goodsList = listdata.data;
 		},
+		
 		goodsDetail(id) {
 			// console.log(id);
-			wx.navigateTo({
-				url: '../communityDetail/communityDetail?id='+id
+			uni.navigateTo({
+				url: '../goods/goods?id='+id
 			});
+		},
+		
+		printdata(data) {
+			console.log(data);
 		}
 	},
 	computed: {}

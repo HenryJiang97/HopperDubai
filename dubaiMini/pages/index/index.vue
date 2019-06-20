@@ -1,16 +1,18 @@
 <template>
 	<div class="index" >
 			
-		
+		<!-- Header -->
 		<cu-custom bgColor="my_header_background">
+			<!-- User info (Top left) -->
 			<block slot="userCenter" @click="jump('my')">
 				<view class="cu-avatar round" style="background-image:url('https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg'); margin: 0;"></view>
 			</block>
-			<block slot="content">Because</block>
+			<block slot="content">首页</block>
 		</cu-custom>
 		
+		
 		<!-- 搜索 -->
-			<view class="cu-bar search bg-white">
+			<!-- <view class="cu-bar search bg-white">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
 					<input @click="toSearch" :adjust-position="false" type="text" placeholder="深海洗颜泥" confirm-type="search"></input>
@@ -18,29 +20,21 @@
 				<view class="action">
 					<button class="cu-btn bg-green shadow-blur round">搜索</button>
 				</view>
-			</view>
-		<!-- 搜索	 -->
+			</view> -->
 		
-		<swiper class="screen-swiper square-dot" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000" duration="500">
+		
+		<!-- 滚动海报 -->
+		<!-- <swiper class="screen-swiper square-dot" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000" duration="500">
 			<swiper-item v-for="(item, index) in swiperList" :key="index">
 				<image :src="item.url" mode="aspectFill" v-if="item.type == 'image'"></image>
 				<video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type == 'video'"></video>
 			</swiper-item>
-		</swiper>
+		</swiper> -->
 
 
-		<!-- 快捷导航 -->
-
-		<view class="cu-bar bg-white solid-bottom ">
-			<view class="action">
-				<text class="cuIcon-title text-orange "></text>
-				热门分类
-			</view>
-			
-			<view class="action">全部
-			<text class="cuIcon-right"></text></view>
-			
-		</view>
+		
+		
+		<!-- 热门分类内容 -->
 		<view class="cu-list grid" :class="['col-' + gridCol, gridBorder ? '' : 'no-border']">
 			<view class="cu-item" v-for="(item, index) in iconList" :key="index" v-if="index < gridCol * 2">
 				<view :class="['cuIcon-' + item.icon, 'text-' + item.color]">
@@ -51,20 +45,22 @@
 				<text>{{ item.name }}</text>
 			</view>
 		</view>
-		<!-- 快捷导航 -->
+
+
 		
-		<!-- 首页流行产品 -->
-		
-		
+		<!-- 热销产品 -->
 		<view class="cu-bar bg-white solid-bottom margin-top-sm">
 			<view class="action">
 				<text class="cuIcon-title text-orange "></text>
 				热销产品
 			</view>
 			
-			<view class="action">更多
-			<text class="cuIcon-right"></text></view>
+			<!-- <view class="action">更多 -->
+			<!-- <text class="cuIcon-right"></text></view> -->
 		</view>
+		
+		
+		<!-- 热销产品内容 -->
 		<view class="bg-white padding">
 			<view class="grid margin-bottom text-center" v-for="(item,index) in 1" :key="index" :class="col-2">
 				<view style='width:47%' class="margin-tb-sm"  :class="indexs%2==0?'margin-right-sm':'margin-left-sm'" v-for="(item,indexs) in hostItems" :key="indexs">
@@ -73,6 +69,9 @@
 				</view>
 			</view>
 		</view>
+		
+		
+		
 		<!-- <view class="flex">
 			<view style='width:45%' class="flex-sub bg-grey padding-sm margin-xs radius" v-for="(item,index) in hostItems" :key="index">
 				<image :src="item.imageUrl" alt="" mode="aspectFill"></image>
@@ -80,6 +79,8 @@
 			</view>
 			<view class="flex-sub bg-grey padding-sm margin-xs radius">1</view>
 		</view> -->
+		 
+		
 		<!-- <view class="flex" >
 		<view class="flex-sub bg-grey padding-sm margin-xs radius" style="width:40%" v-for="(item,index) in hostItems" :key="index">
 			<view  >
@@ -89,15 +90,17 @@
 				<p style='width:100%'>{{item.name}}</p>
 			</view>
 		</view>
-		</view> -->
-		<!-- <view class="grid margin-bottom text-center col-2">
+		</view>
+		
+		
+		<view class="grid margin-bottom text-center col-2">
 			<view class="padding" v-for="(item,index) in hostItems" :key="index" >
 				<img style='width:100%;height:100%' :src="item.imageUrl" alt='' />
 				<p>{{item.name}}</p>
 			</view>
-		</view> -->
+		</view>
 		
-		<scroll-view class="list bg-white"  scroll-y >
+		<! <scroll-view class="list bg-white"  scroll-y >
 			<view class="bg-white padding" >
 				<view class="grid margin-bottom text-center col-2">
 					<SingleItem v-if="hotItems"  v-for="(item,indexs) in hotItems" 
@@ -105,8 +108,9 @@
 					:item="item" style="width:50%;"></SingleItem>	
 				</view>
 			</view>
-		</scroll-view>
+		</scroll-view> -->
 		<!-- 首页流行产品 -->
+		
 		
 		<!-- 底部菜单 -->
 		<view class="cu-bar tabbar footer_bar bg-bingbang my_box_shadow shadow">
@@ -114,27 +118,32 @@
 				<view class="cuIcon-home"></view>
 				首页
 			</view>
+			
 			<view class="action text-gray" @click="jump('category')">
 				<view class="cuIcon-shop"></view>
 				商店
 			</view>
+			
 			<!-- <view class="action text-gray" @click="jump('monthlyNew')">
 				<view class="cuIcon-goodsnew"></view>
 				每月新品
 			</view> -->
-			<view class="action text-gray" @click="jump('community')">
+			
+			<!-- <view class="action text-gray" @click="jump('community')">
 				<view class="cuIcon-hot"></view>
 				社区
-			</view>
-		<!-- 	<view class="action text-gray add-action" @click="jump('publish')">
+			</view> -->
+			
+			<!-- <view class="action text-gray add-action" @click="jump('publish')">
 				<button class="cu-btn cuIcon-add bg-bingbang shadow"></button>
 				发布
-			</view>
+			</view> -->
 			
 			<view class="action text-gray" @click="jump('cart')">
-				<view class="cuIcon-cart"><view class="cu-tag badge">99</view></view>
+				<view class="cuIcon-cart"><view class="cu-tag badge">{{itemsInCart}}</view></view>
 				购物车
-			</view> -->
+			</view>
+			
 			<view class="action text-gray" @click="jump('my')">
 				<view class="cuIcon-my"><view class="cu-tag badge"></view></view>
 				个人中心
@@ -166,10 +175,11 @@
 			</view>
 		</view> -->
 		<!-- 分享弹出 -->
-	
 		
 	</div>
 </template>
+
+
 
 <script>
 	
@@ -180,84 +190,30 @@ import fake from '../../fakedata/home.js';
 import SingleItem from '../../components/item'
 import Parse from '../../common/parse.js'
 
+
 export default {
 	components:{
 		SingleItem
 	},
-	mounted() {
+	onLoad() {
 		// this.$store.dispatch('getHotItems')
 		this.getHomeData()
+		
 	},
+	onShow() {
+		this.getItemsInCart();
+		this.getItemsInCart();
+	},
+	
 	computed:{
-		...mapState(['hotItems'])
+		...mapState(['hotItems','cart'])
 	},
 	data() {
 		return {
 			
 			gridCol: 4,
 			gridBorder: true,
-			iconList: [
-				{
-					icon: 'cardboardfill',
-					color: 'yellow',
-					badge: 120,
-					name: '面膜'
-				},
-				{
-					icon: 'moneybagfill',
-					color: 'yellow',
-					badge: 1,
-					name: '洗面奶'
-				},
-				{
-					icon: 'picfill',
-					color: 'yellow',
-					badge: 0,
-					name: '图像'
-				},
-				{
-					icon: 'noticefill',
-					color: 'yellow',
-					badge: 22,
-					name: '通知'
-				},
-				{
-					icon: 'upstagefill',
-					color: 'yellow',
-					badge: 0,
-					name: '排行榜'
-				},
-				{
-					icon: 'clothesfill',
-					color: 'yellow',
-					badge: 0,
-					name: '皮肤'
-				},
-				{
-					icon: 'discoverfill',
-					color: 'yellow',
-					badge: 0,
-					name: 'yellow'
-				},
-				{
-					icon: 'questionfill',
-					color: 'yellow',
-					badge: 0,
-					name: 'yellow'
-				},
-				{
-					icon: 'commandfill',
-					color: 'yellow',
-					badge: 0,
-					name: 'yellow'
-				},
-				{
-					icon: 'brandfill',
-					color: 'yellow',
-					badge: 0,
-					name: '版权'
-				}
-			],
+			iconList: [],
 			swiperList: [
 				{
 					id: 0,
@@ -302,7 +258,9 @@ export default {
 			
 			hostItems: [], // 最热产品
 			topicList: [],
-			newCategoryList: []
+			newCategoryList: [],
+			itemsInCart: 0,
+			
 		};
 	},
 	
@@ -310,6 +268,10 @@ export default {
 		async getHomeData(){
 			this.hostItems=await post(`/catalogapi/homeProduct`)
 			console.log(this.hostItems)
+		},
+		
+		getItemsInCart() {
+			this.itemsInCart = Object.keys(this.cart).length;
 		},
 		
 		
@@ -398,6 +360,7 @@ export default {
 				}
 			});
 		},
+		
 		getCityName() {
 			uni.getLocation({
 				success(r) {
@@ -424,11 +387,13 @@ export default {
 				}
 			});
 		},
+		
 		toSearch() {
 			wx.navigateTo({
 				url: '/pages/search/search'
 			});
 		},
+		
 		async getData() {
 			const data = fake;
 			this.banner = data.banner;
@@ -439,16 +404,19 @@ export default {
 			this.topicList = data.topicList;
 			this.newCategoryList = data.newCategoryList;
 		},
+		
 		goodsDetail(id) {
 			wx.navigateTo({
 				url: '/pages/goods/goods?id=' + id
 			});
 		},
+		
 		categoryList(id) {
 			wx.navigateTo({
 				url: '/pages/categorylist/categorylist?id=' + id
 			});
 		},
+		
 		goodsList(info) {
 			if (info == 'hot') {
 				wx.navigateTo({
@@ -460,27 +428,32 @@ export default {
 				});
 			}
 		},
+		
 		topicdetail(id) {
 			wx.navigateTo({
 				url: '/pages/topicdetail/topicdetail?id=' + id
 			});
 		},
+		
 		totopic() {
 			wx.navigateTo({
 				url: '/pages/topic/topic'
 			});
 		},
+		
 		tobrandList() {
 			wx.navigateTo({
 				url: '/pages/brandlist/brandlist'
 			});
 		},
+		
 		branddetail(id) {
 			wx.navigateTo({
 				url: '/pages/branddetail/branddetail?id=' + id
 			});
 		}
 	},
+	
 	created() {
 		// this.demonote() // 显示提醒
 	},

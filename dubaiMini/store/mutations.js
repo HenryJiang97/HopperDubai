@@ -27,9 +27,40 @@ const mutations = {
 
 	setWxProfiles(state, wxProfiles) { // 同步用户的微信信息
 		state.wxProfile = wxProfiles
+		
+	},
+	
+	addToCart(state, x){
+		if (state.cart[x.pkg] != null) {
+			console.log("In the cart")
+			state.cart[x.pkg].quantity += x.quantity;
+		}
+		else {
+			console.log("New added")
+			state.cart[x.pkg] = {
+				detail: x.product,
+				quantity: x.quantity,
+				pkg: x.pkg,
+				pkgName : x.pkgName,
+				price : x.price,
+			};
+		}
+	},
+	
+	deleteFromCart(state, pkg) {
+		// console.log(pkg);
+		delete state.cart[pkg];
 	},
 
-
+	updateCart(state, x) {	
+		var quant = state.cart[x.pkg].quantity;
+		
+		if (quant + x.changes >= 1) {
+			quant += x.changes;
+		}
+		
+		state.cart[x.pkg].quantity = quant;
+	},
 
 
 
