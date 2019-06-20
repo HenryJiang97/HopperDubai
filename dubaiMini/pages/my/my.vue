@@ -22,15 +22,15 @@
 					<button type="primary" @click="connectMagento()">注册到magento</button>
 
 			<!-- 常用菜单 -->
-			<view class="cu-list col-3 grid sm-border" >
-				<view class="cu-item" @tap="jump('save')">
+			<view class="cu-list col-1 grid sm-border" >
+				<!-- <view class="cu-item" @tap="jump('save')">
 					<view class="cuIcon-like">
 						<view class="cu-tag badge" >
 							<block >11</block>
 						</view>
 					</view>
 					<text>我的收藏</text>
-				</view>
+				</view> -->
 				<view class="cu-item" @tap="jump('order')">
 					<view class="cuIcon-form">
 						<view class="cu-tag badge" >
@@ -39,20 +39,20 @@
 					</view>
 					<text>我的订单</text>
 				</view>
-				<view class="cu-item" @tap="jump('address')">
+				<!-- <view class="cu-item" @tap="jump('address')">
 					<view class="cuIcon-addressbook">
 						<view class="cu-tag badge" >
 							<block >11</block>
 						</view>
 					</view>
 					<text>我的地址</text>
-				</view>
+				</view> -->
 			</view>
 			
 			<!-- 常用菜单 -->
 			
 			<!-- 列表菜单 -->		
-				<view class="cu-list menu" :class="[menuBorder?'sm-border':'',menuCard?'card-menu margin-top':'']">
+				<!-- <view class="cu-list menu" :class="[menuBorder?'sm-border':'',menuCard?'card-menu margin-top':'']">
 				
 			
 				<view class="cu-item arrow" @tap="moneyhistory">
@@ -104,7 +104,7 @@
 					<view class="action">
 						<switch checked @change="changeLanguage" />
 					</view>
-				</view>
+				</view> -->
 		
 				
 				
@@ -120,6 +120,9 @@
 
 		
 	</div>
+	
+	
+	
 </template>
 
 <script>

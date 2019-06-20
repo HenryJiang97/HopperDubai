@@ -19,6 +19,7 @@
 		{"path": "pages/moneyhistory/moneyhistory","style": {"navigationBarTitleText": "现金流"}},
 
 		{"path": "pages/qa/qa","style": {"navigationBarTitleText": "问答"}},
+		{"path": "pages/success/success","style": {"navigationBarTitleText": "支付成功"}},
 
 		
 		

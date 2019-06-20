@@ -77,9 +77,9 @@
 		
 				<!-- 支付底栏 -->
 				<view class="cu-bar bg-white tabbar border shop foot">
-						<view class="margin-right" style="text-align: right; width: 50%;"> 实付款:<text class="margin-left text-xl">¥ {{totalPrice}} </text> </view>
-					
-					<view class="bg-red submit">立即支付</view>
+					<view class="margin-right" style="text-align: right; width: 50%;"> 实付款:<text class="margin-left text-xl">¥ {{totalPrice}} </text> </view>
+				
+					<view class="bg-red submit" @tap="addToOrder()">立即支付</view>
 				</view>
 			
 		</div>
@@ -96,6 +96,8 @@
   export default {
     onShow() {
 		this.getTotalPrice();
+		console.log(this.cart);
+		
     },
 	
 	
@@ -165,6 +167,17 @@
 			
 			paymentSelect(selection) {
 				this.paymentSelection = selection;
+			},
+			
+			addToOrder() {
+				this.$store.commit('addToOrder');
+				this.jump('success');
+				this.reload();
+				this.emptyCart();
+			},
+			
+			emptyCart() {
+				this.$store.commit('emptyCart');
 			},
 		
 			// Navigate to certain page

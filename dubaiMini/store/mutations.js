@@ -63,8 +63,19 @@ const mutations = {
 		state.cart[x.pkg].quantity = quant;
 	},
 
-
-
+	addToOrder(state) {
+		var new_obj = Object.assign({}, state.cart);  // Deep copy
+		state.order.push(new_obj);
+		console.log(state.order);
+		
+	},
+	
+		
+	emptyCart(state) {
+		for (var key in state.cart) {
+			delete state.cart[key];
+		}
+	},
 
 	setLang(state, v) {
 		state.language = v

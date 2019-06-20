@@ -11,6 +11,10 @@ const state = {
 		
 		// Items in the shopping cart
 		cart:{},
+		
+		// Order
+		order:[],
+		
 	}
 
 export default state
