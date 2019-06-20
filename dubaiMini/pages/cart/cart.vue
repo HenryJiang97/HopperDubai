@@ -11,7 +11,8 @@
 				<div v-modle="cart" v-for="(x,index) in cart" :key="index" class="cartlist">
 					<view class="cu-list menu-avatar">
 						<view class="cu-item" :class="modalName=='move-box-'+ index?'move-cur':''" >
-							<view class="cu-avatar radius xl" :style="[{backgroundImage:'url(https://ossweb-img.qq.com/images/lol/web201310/skin/big2100'+ 1 +'.jpg)'}]"></view>
+							<view class="cu-avatar radius xl" :style=" 'background-image: url(' + x.pic +')'"></view>
+						
 						
 							<view class="content">
 								<view class="text-gray text-sm">
@@ -47,23 +48,31 @@
 				</div>
 				
 				
-				<view class="cu-list bg-white menu margin-top solid-top">
-					<view class="cu-item " >
-							<view class="content">
-								<image src="/static/wechat.svg" class="png" mode="aspectFit"></image>
-								<text class="text-grey">微信支付</text>
-							</view>
+				<view class="cu-list bg-white menu margin-top solid-top" v-if="totalQuantity != 0">
+					<view @tap="paymentSelect(0)" class="cu-item " >
+						<view class="content">
+							<image src="/static/wechat.svg" class="png" mode="aspectFit"></image>
+							<text class="text-grey">微信支付</text>
+						</view>
 							
-							<text class="cuIcon-check"></text>
+						<text :class="{'cuIcon-check': paymentSelection == 0}"></text>
+					</view>
+						
+					<view @tap="paymentSelect(1)" class="cu-item" >
+						<view class="content">
+							<image src="/static/alipay.svg" class="png" mode="aspectFit"></image>
+							<text class="text-grey">支付宝支付</text>
 						</view>
 						
-						<view class="cu-item" :class="menuArrow?'arrow':''">
-							<view class="content">
-								<image src="/static/alipay.svg" class="png" mode="aspectFit"></image>
-								<text class="text-grey">支付宝支付</text>
-							</view>
-						</view>
+						<text :class="{'cuIcon-check': paymentSelection == 1}"></text>
+					</view>
+					
+					<!-- Blank bar for format -->
+					<view class="bg-white padding"></view>
+					<view class="bg-white padding"></view>
 				</view>
+				
+				
 				
 		
 				<!-- 支付底栏 -->
@@ -121,6 +130,8 @@
 		pkgName: '',
 		isRouterAlive: true,    // Used to reload page
 		totalPrice: 0,
+		totalQuantity: 0,
+		paymentSelection: 0,
       };
     },
 	
@@ -149,6 +160,11 @@
 				console.log("Total price = " + price);
 				console.log("Total quantity = " + quantity);
 				this.totalPrice = price;
+				this.totalQuantity = quantity;
+			},
+			
+			paymentSelect(selection) {
+				this.paymentSelection = selection;
 			},
 		
 			// Navigate to certain page

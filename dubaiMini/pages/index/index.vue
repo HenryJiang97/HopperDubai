@@ -70,7 +70,8 @@
 			</view>
 		</view>
 		
-		
+		<!-- Blank bar for format -->
+		<view class="bg-white padding"></view>
 		
 		<!-- <view class="flex">
 			<view style='width:45%' class="flex-sub bg-grey padding-sm margin-xs radius" v-for="(item,index) in hostItems" :key="index">

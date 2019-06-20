@@ -6,7 +6,7 @@ import cuCustom from './colorui/components/cu-custom.vue'
 Vue.component('cu-custom',cuCustom) // 使用封装的导航栏
 
 const Parse = require('./common/parse.js')
-Parse.initialize("Cause");
+Parse.initialize("dubai");
 Parse.serverURL = 'http://localhost:1337/parse'
 
 import i18n from './i18n.js'

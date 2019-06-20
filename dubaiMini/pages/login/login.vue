@@ -5,8 +5,9 @@
 			<button open-type="getUserInfo" @getuserinfo="getUserInfo"   class="cu-btn cuIcon-weixin bg-gradual-green margin-tb-sm lg ">
 				<text class="margin-left-sm text-white">微信登录</text>
 			</button>
+			
+			
 		</view>
-		
 			
 	</div>
 </template>
@@ -21,6 +22,10 @@ export default {
 	},
 	components: {},
 	methods: {
+		
+		printf() {
+			console.log(Parse.Cloud.run('printf'));
+		},
 		
 		connerctMagento(){
 			Parse.Cloud.run('createCustomer').then( r => {
@@ -44,6 +49,7 @@ export default {
 					access_token: r,
 
 				};
+				
 				let newUser = new Parse.User();
 				newUser
 					._linkWith('weapp', {
@@ -85,6 +91,7 @@ export default {
 			uni.login({
 				success(res) {
 					if (res.code) {
+						console.log(Parse.Cloud)
 						Parse.Cloud.run('GetOpenId', res)
 							.then(r => {
 								console.log('最终的结果' + JSON.stringify(r));
@@ -101,7 +108,7 @@ export default {
 			});
 		},
 
-	}
+	},
 	
 };
 </script>

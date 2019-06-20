@@ -281,8 +281,10 @@ export default {
 					pkgName = p[i].title;
 				}	
 			}
+			let pic = this.modalImage;
+			
 			// console.log(pkgName);
-			this.$store.commit('addToCart',{product:this.product, quantity: quantity, pkg: pkg, pkgName: pkgName, price: price});
+			this.$store.commit('addToCart',{product:this.product, quantity: quantity, pkg: pkg, pkgName: pkgName, price: price, pic: pic});
 			
 			// Hide the modal after adding to the cart
 			this.hideModal();

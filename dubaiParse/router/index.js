@@ -11,13 +11,8 @@ router.use(function timelog(req, res, next) {
 
 router.get('/', (req, res) => {
     console.log('youzanToken' + JSON.stringify(getToken()) )
-    
-
-  
-
-    
-
-
-
 })
+
+
+
 module.exports = router

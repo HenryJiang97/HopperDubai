@@ -97,15 +97,17 @@
 				
 				this.detailData = this.listData.filter( x => x.id === id )[0] // 过滤出当前点击的那个子分类
 				console.log(index)
-
-				let promises = this.detailData.subcategories.map( x => {
-					return post('/catalogapi/getCategoryProducts', {"param":{"id":x.id,"token":this.token}}).then()
-				})
-				// console.log(promises)
-				Promise.all(promises).then(r => {
-					this.listDataNum[index] = r}
-					);
 				
+				
+
+				// let promises = this.detailData.subcategories.map( x => {
+				// 	return post('/catalogapi/getCategoryProducts', {"param":{"id":x.id,"token":this.token}}).then()
+				// })
+				// // console.log(promises)
+				// Promise.all(promises).then(r => {
+				// 	this.listDataNum[index] = r
+				// });
+				// 
 				// console.log(this.listDataNum[index]);
 			},
 			
@@ -113,7 +115,7 @@
 				const data = await post("/catalogapi/topMenu"); // 拿到全部分类信息
 				this.listData = data; // 拿到啦
 				
-				// console.log(this.listData)
+				console.log(this.listData)
 			},
 
 			toCategory(id, name){

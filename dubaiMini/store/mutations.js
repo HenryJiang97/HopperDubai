@@ -43,6 +43,7 @@ const mutations = {
 				pkg: x.pkg,
 				pkgName : x.pkgName,
 				price : x.price,
+				pic : x.pic
 			};
 		}
 	},
