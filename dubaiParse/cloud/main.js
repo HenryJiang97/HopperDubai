@@ -2,21 +2,16 @@ let axios = require('axios')
 let Publish = require('./publish') 
 const wechatConfig = require('../wechat-config')
 const { getAccessToken } = require('../tools/access-token')
+const q = require('../tools/request')
 
 for (x in Publish){
   Parse.Cloud.define(x, Publish[x])
 }
 
 
-Parse.Cloud.define('hello', function(req, res) {
+Parse.Cloud.define('hello', async req=> {
   return 'Hi';
 });
-
-
-
-
-
-
 
 
 Parse.Cloud.define('addComment',async req=>{//增加Comment表
@@ -81,5 +76,48 @@ Parse.Cloud.define('GetOpenId', async request => {
 
 Parse.Cloud.define('getAccessToken', async req => {
   return await getAccessToken().then()
+})
+
+
+Parse.Cloud.define('createCustomer', async req => {
+  console.log('req' + JSON.stringify(req))
+
+  // 创建一个Magento 账户，unionId 被加盐存起来了
+  let unionId = req.params.openId
+  console.log(unionId)
+
+  // Get registration status
+  if (unionId) {
+    let r = await q({
+      method: 'post',
+      url: '/customerapi/createCustomer',
+      data: {
+        "param": {
+          "firstname": "Shankar",
+          "lastname": "Ingale",
+          "uniqueId": unionId,
+          "password": "123456",
+          "type" : "wechat"
+        },
+      }
+    }).then()
+
+    if(!r[0])    console.log("User already exists");
+    else    console.log("New user created");
+
+    // Get user token
+    let token = await q({
+      method: 'post',
+      url: '/customerapi/login',
+      data: {
+        "param": {
+          "uniqueId": unionId,
+          "password": "123456",
+        },
+      }
+    });
+
+    return token;
+  }
 })
 

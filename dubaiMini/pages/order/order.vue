@@ -12,6 +12,8 @@
 		</scroll-view> -->
 		
 		
+		
+		
 		<div class="order_item" v-for="(x,index) in order" :key="index">
 			
 			<div class="cu-bar bg-white solid padding-lr" >
@@ -22,7 +24,7 @@
 				</div>
 				
 				<div class="seller">
-					<view class="cu-avatar radius sm margin-right-sm" style="margin-center: 4;"></view>
+					<view class="cu-avatar radius sm margin-right-sm" style="margin-left: 5;"></view>
 					订单总价: ¥{{totalOrderPrice[index]}}
 				</div>
 				
@@ -51,13 +53,12 @@
 								</view>
 							</view> -->
 							
-							<view class="desc ">
+							<view class="cu-item menu-avatar">
+								
 								<view class="text-content">{{p.detail.name}}</view>
 								<view class="text-content">套餐: {{p.pkgName}} x {{p.quantity}}</view>
+								<view class="cu-tag bg-red light sm round">总价：¥ {{p.price * p.quantity}}</view>
 								
-								<view>
-									<view class="cu-tag bg-red light sm round">实际付款：¥ {{p.price * p.quantity}}</view>
-								</view>
 							</view>
 							
 						</view>

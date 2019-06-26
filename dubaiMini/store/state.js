@@ -15,6 +15,12 @@ const state = {
 		// Order
 		order:[],
 		
+		// Openid
+		openid:'',
+		
+		// Token
+		token: '',
+		
 	}
 
 export default state

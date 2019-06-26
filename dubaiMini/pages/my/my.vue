@@ -12,14 +12,14 @@
 				<view class="action"><view class="cu-avatar lg round" :style="'background-image:url(' + wxProfile.avatarUrl + ')'"></view></view>
 				
 				<div class="name">
-					{{wxProfile.nickName}}
+					用户名: {{wxProfile.nickName}}
 				</div>
 				
-				<view class="action"><button class="cu-btn bg-green shadow" @tap="showModal" data-target="gridModal">个人资料</button></view>
+				<view class="action"></view>
 			</view>
 			<!-- 个人资料 -->
 			
-					<button type="primary" @click="connectMagento()">注册到magento</button>
+					<!-- <button type="primary" @click="connectMagento()">注册到magento</button> -->
 
 			<!-- 常用菜单 -->
 			<view class="cu-list col-1 grid sm-border" >
@@ -34,7 +34,7 @@
 				<view class="cu-item" @tap="jump('order')">
 					<view class="cuIcon-form">
 						<view class="cu-tag badge" >
-							<block >11</block>
+							<block >{{orderCount}}</block>
 						</view>
 					</view>
 					<text>我的订单</text>
@@ -48,6 +48,7 @@
 					<text>我的地址</text>
 				</view> -->
 			</view>
+			
 			
 			<!-- 常用菜单 -->
 			
@@ -126,6 +127,7 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex'
 	import Parse from '../../common/parse.js'
 import { get, toLogin, login } from '../../utils';
 export default {
@@ -133,8 +135,13 @@ export default {
 		console.log('开始检查登录情况');
 		this.$store.commit('needLogin');
 		this.wxProfile = this.$store.state.wxProfile
+		// this.printOpenId();
+		console.log(this.token);
 	},
 	onLoad() {
+		this.getOrderCount();
+		
+		// this.printf();
 	},
 	created() {},
 	mounted() {},
@@ -208,30 +215,47 @@ export default {
 			allcheck: false,
 			listData: [],
 			Listids: [],
-			userInfo: {}
+			userInfo: {},
+			orderCount: 0,
 		};
 	},
 	components: {},
 	methods: {
-		connectMagento(){
-			// this.$http({
-			// 	url: '/restful/customers',
-			// 	method: 'POST',
-			// 	data: {
-			// 		id: this.$store.state.openId
-			// 	},
-			// 	success: res => {
-			// 		console.log(res)
-			// 	},
-			// 	fail: () => {},
-			// 	complete: () => {}
-			// });
-			let Uid = Parse.User.current().toJSON().authData.weapp.id
-			Parse.Cloud.run('customers',{id: Uid})
-			.then( r => console.log('r' + JSON.stringify(r)))
-			.catch( e => console.log('e' + JSON.stringify(e)))
-		}
-		,
+		printOpenId() {
+			console.log('Users openid: ' + this.openid);
+		},
+		
+		printf() {
+			Parse.Cloud.run('hello').then(x => {
+				console.log(x);
+			}).catch(e => {
+				console.log("Error parsing");
+			})
+		},
+		
+		getOrderCount() {
+			this.orderCount = this.order.length;
+		},
+		
+		// connectMagento(){
+		// 	// this.$http({
+		// 	// 	url: '/restful/customers',
+		// 	// 	method: 'POST',
+		// 	// 	data: {
+		// 	// 		id: this.$store.state.openId
+		// 	// 	},
+		// 	// 	success: res => {
+		// 	// 		console.log(res)
+		// 	// 	},
+		// 	// 	fail: () => {},
+		// 	// 	complete: () => {}
+		// 	// });
+		// 	let Uid = Parse.User.current().toJSON().authData.weapp.id
+		// 	Parse.Cloud.run('customers',{id: Uid})
+		// 	.then( r => console.log('r' + JSON.stringify(r)))
+		// 	.catch( e => console.log('e' + JSON.stringify(e)))
+		// }
+		// ,
 		jump(pageName) {
 			uni.navigateTo({
 				url: `../${pageName}/${pageName}`,
@@ -251,7 +275,9 @@ export default {
 		
 		
 	},
-	computed: {}
+	computed: {
+		...mapState(['order', 'openid', 'token']),
+	},
 };
 </script>
 <style scoped>

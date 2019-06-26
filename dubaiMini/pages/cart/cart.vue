@@ -87,6 +87,7 @@
 
 <script>
 	import { mapState } from 'vuex'
+	import Parse from '../../common/parse.js'
   import {
     get,
     post,
@@ -97,7 +98,6 @@
     onShow() {
 		this.getTotalPrice();
 		console.log(this.cart);
-		
     },
 	
 	
@@ -139,6 +139,7 @@
 	
     components: {},
     methods: {
+		
 			// Update quantity in the cart
 			updateQuantity(pkg, changes) {
 				this.$store.commit('updateCart', {pkg: pkg, changes: changes});

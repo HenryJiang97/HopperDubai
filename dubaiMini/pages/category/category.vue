@@ -10,8 +10,7 @@
 		<view class="VerticalBox">
 			<!-- Category names -->
 			<scroll-view class="VerticalNav nav" scroll-y scroll-with-animation :scroll-top="verticalNavTop" style="height:calc(100vh - 0upx)">
-				<view class="cu-item" @tap="selectitem(item.id,index)" :class="index==tabCur?'text-green cur':''" v-for="(item,index) in listData" :key="index" 
-				 :data-id="index">
+				<view class="cu-item" @tap="selectitem(item.id,index)" :class="index==tabCur?'text-green cur':''" v-for="(item,index) in listData" :key="index" :data-id="index">
 					{{item.name}}
 				</view>
 			</scroll-view>
@@ -35,18 +34,13 @@
 					<!-- Subcategory details -->
 					<view class="cu-list menu-avatar" :key='index1' @click="toCategory(item1.id, item1.name)">
 						<view class="cu-item">
-							<view class="content">
-								<view class="text-grey">{{item1.name}}</view>
-								<view class="text-gray text-sm flex">
-									<text class="text-cut">
-										<!-- <text class="cuIcon-infofill text-red  margin-right-xs"></text> -->
-									</text> 
-								</view>
+							<view class="content" style="margin-left: 0;">
+								<view class="text-bold">{{item1.name}}</view>
 							</view>
-							<view v-if="listDataNum[index]" class="action">
-								<view class="text-grey text-xs"></view>
+							<!-- <view v-if="listDataNum[index]" class="action"> -->
+								<!-- <view class="text-grey text-xs"></view> -->
 								<!-- <view class="cu-tag  bg-grey sm">{{listDataNum[index1].length}}</view> -->
-							</view>
+							<!-- </view> -->
 						</view>
 						
 					</view>

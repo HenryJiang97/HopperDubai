@@ -68,6 +68,7 @@ const mutations = {
 		state.order.push(new_obj);
 		console.log(state.order);
 		
+
 	},
 	
 		
@@ -153,8 +154,13 @@ const mutations = {
 
 		state.onlineUser.remove(v)
 	},
-	setOpenId(state, openId) {
-		state.openId = openId
+	
+	setOpenId(state, openid) {
+		state.openid = openid
+	},
+	
+	setToken(state, token) {
+		state.token = token
 	}
 
 

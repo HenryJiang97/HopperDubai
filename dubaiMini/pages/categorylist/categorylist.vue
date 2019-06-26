@@ -152,7 +152,7 @@ export default {
 		},
 		
 		hideModal(e) {
-				this.modalName = null
+			this.modalName = null
 		},
 
 		tabSelect(e) {
@@ -165,10 +165,11 @@ export default {
 			const listdata = await post('/catalogapi/getCategoryProducts', {"param":{"id":this.categoryId,"token":this.token}});
 			this.goodsList = listdata;
 			
-			
+			console.log(listdata);
 			//需要让导航滚动到可见区域
 			if (this.nowIndex > 4) {
 				this.scrollLeft = this.nowIndex * 60;
+				
 			}
 		},
 		

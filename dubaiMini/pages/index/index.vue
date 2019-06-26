@@ -4,36 +4,11 @@
 		<!-- Header -->
 		<cu-custom bgColor="my_header_background">
 			<!-- User info (Top left) -->
-			<block slot="userCenter" @click="jump('my')">
-				<!-- <view class="cu-avatar round" style="background-image:url('https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg'); margin: 0;"></view> -->
-			</block>
+			<block slot="userCenter" @click="jump('my')"></block>
 			<block slot="content">首页</block>
 		</cu-custom>
 		
-		
-		<!-- 搜索 -->
-			<!-- <view class="cu-bar search bg-white">
-				<view class="search-form round">
-					<text class="cuIcon-search"></text>
-					<input @click="toSearch" :adjust-position="false" type="text" placeholder="深海洗颜泥" confirm-type="search"></input>
-				</view>
-				<view class="action">
-					<button class="cu-btn bg-green shadow-blur round">搜索</button>
-				</view>
-			</view> -->
-		
-		
-		<!-- 滚动海报 -->
-		<!-- <swiper class="screen-swiper square-dot" :indicator-dots="true" :circular="true" :autoplay="true" interval="5000" duration="500">
-			<swiper-item v-for="(item, index) in swiperList" :key="index">
-				<image :src="item.url" mode="aspectFill" v-if="item.type == 'image'"></image>
-				<video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type == 'video'"></video>
-			</swiper-item>
-		</swiper> -->
 
-
-		
-		
 		<!-- 热门分类内容 -->
 		<view class="cu-list grid" :class="['col-' + gridCol, gridBorder ? '' : 'no-border']">
 			<view class="cu-item" v-for="(item, index) in iconList" :key="index" v-if="index < gridCol * 2">
@@ -47,16 +22,12 @@
 		</view>
 
 
-		
 		<!-- 热销产品 -->
 		<view class="cu-bar bg-white solid-bottom margin-top-sm">
 			<view class="action">
 				<text class="cuIcon-title text-orange "></text>
 				热销产品
 			</view>
-			
-			<!-- <view class="action">更多 -->
-			<!-- <text class="cuIcon-right"></text></view> -->
 		</view>
 		
 		
@@ -72,45 +43,7 @@
 		
 		<!-- Blank bar for format -->
 		<view class="bg-white padding"></view>
-		
-		<!-- <view class="flex">
-			<view style='width:45%' class="flex-sub bg-grey padding-sm margin-xs radius" v-for="(item,index) in hostItems" :key="index">
-				<image :src="item.imageUrl" alt="" mode="aspectFill"></image>
-				<p>{{item.name}}</p>
-			</view>
-			<view class="flex-sub bg-grey padding-sm margin-xs radius">1</view>
-		</view> -->
-		 
-		
-		<!-- <view class="flex" >
-		<view class="flex-sub bg-grey padding-sm margin-xs radius" style="width:40%" v-for="(item,index) in hostItems" :key="index">
-			<view  >
-				{{item.name}}
-				<img style='width:50%;height:1%' :src="item.imageUrl" alt='' />
-				<image style="width:100%;" :src="item.imageUrl" alt="" mode="aspectFill"></image>
-				<p style='width:100%'>{{item.name}}</p>
-			</view>
-		</view>
-		</view>
-		
-		
-		<view class="grid margin-bottom text-center col-2">
-			<view class="padding" v-for="(item,index) in hostItems" :key="index" >
-				<img style='width:100%;height:100%' :src="item.imageUrl" alt='' />
-				<p>{{item.name}}</p>
-			</view>
-		</view>
-		
-		<! <scroll-view class="list bg-white"  scroll-y >
-			<view class="bg-white padding" >
-				<view class="grid margin-bottom text-center col-2">
-					<SingleItem v-if="hotItems"  v-for="(item,indexs) in hotItems" 
-					:key="indexs" 
-					:item="item" style="width:50%;"></SingleItem>	
-				</view>
-			</view>
-		</scroll-view> -->
-		<!-- 首页流行产品 -->
+	
 		
 		
 		<!-- 底部菜单 -->
@@ -125,21 +58,6 @@
 				商店
 			</view>
 			
-			<!-- <view class="action text-gray" @click="jump('monthlyNew')">
-				<view class="cuIcon-goodsnew"></view>
-				每月新品
-			</view> -->
-			
-			<!-- <view class="action text-gray" @click="jump('community')">
-				<view class="cuIcon-hot"></view>
-				社区
-			</view> -->
-			
-			<!-- <view class="action text-gray add-action" @click="jump('publish')">
-				<button class="cu-btn cuIcon-add bg-bingbang shadow"></button>
-				发布
-			</view> -->
-			
 			<view class="action text-gray" @click="jump('cart')">
 				<view class="cuIcon-cart"><view class="cu-tag badge">{{itemsInCart}}</view></view>
 				购物车
@@ -151,31 +69,6 @@
 			</view>
 		</view>
 		<!-- 底部菜单 -->
-		
-		
-		
-		<!-- 分享弹窗 -->
-			<!-- <view class="cu-modal" :class="sharePop ? 'show':''">
-			<view class="cu-dialog">
-				<view class="cu-bar bg-white justify-end">
-					<view class="content">Modal标题</view>
-					<view class="action" @tap="hideModal">
-						<text class="cuIcon-close text-red"></text>
-					</view>
-				</view>
-				<view class="padding-xl">
-					Modal 内容。
-				</view>
-				<view class="cu-bar bg-white justify-end">
-					<view class="action">
-						<button class="cu-btn line-green text-green" @tap="hideModal">取消</button>
-						<button class="cu-btn bg-green margin-left" @tap="hideModal">确定</button>
-
-					</view>
-				</view>
-			</view>
-		</view> -->
-		<!-- 分享弹出 -->
 		
 	</div>
 </template>
@@ -199,7 +92,6 @@ export default {
 	onLoad() {
 		// this.$store.dispatch('getHotItems')
 		this.getHomeData()
-		
 	},
 	onShow() {
 		this.getItemsInCart();
@@ -420,7 +312,7 @@ export default {
 	},
 	
 	created() {
-		// this.demonote() // 显示提醒
+		
 	},
 	
 	onShareAppMessage: function(options) {

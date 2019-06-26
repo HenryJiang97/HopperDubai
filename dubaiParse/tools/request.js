@@ -11,22 +11,19 @@ function errorCreate(err) {
 
 // 创建一个 axios 实例
 const service = axios.create({
-  baseURL: 'https://cause.wudizu.com',
+  baseURL: 'http://hopper.php-dev.in/rest/V1',
   timeout: 1000 * 60,
   headers: {
     'content-type': 'application/json',// 默认值，
-    'Authorization': 'Bearer i6idbw5xbpiw8dk14cdvi77auygug9ce'
+    'Authorization': 'Bearer zek2glksyljjumj2zwavuk715e31sgqf'
   }
 })
 
-const getBaseUrl = locale => {
-  return locale === 'zh-CN' ? '/index.php/rest/zh_cn/V1' : '/index.php/rest/en_us/V1'
-}
 
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    config.baseURL += getBaseUrl(global.locale)
+    // config.baseURL += getBaseUrl(global.locale)
     return config
   },
   error => {

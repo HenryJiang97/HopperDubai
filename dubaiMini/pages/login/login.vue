@@ -13,30 +13,53 @@
 </template>
 
 <script>
-import Parse from '../../common/parse.js'
+	import { mapState } from 'vuex'
+	import Parse from '../../common/parse.js'
 export default {
 	created() {},
 	mounted() {},
 	data() {
 		return {};
 	},
+	onLoad() {
+	},
+	
 	components: {},
 	methods: {
-		
-		printf() {
-			console.log(Parse.Cloud.run('printf'));
-		},
-		
-		connerctMagento(){
-			Parse.Cloud.run('createCustomer').then( r => {
+		connectMagento(id){
+			let that = this;
+			
+			Parse.Cloud.run('createCustomer',{
+				openId: id,
+			}).then( r => {
+				let token = r[0].token;
+				that.$store.commit('setToken', token);
 				console.log('r' + JSON.stringify(r));
 			}).catch( e => {
 				console.log('e' + JSON.stringify(e));
 			})
 		},
 		
+		
 
 		getUserInfo(r) {
+			function connectMagento(id){
+				let that = this;
+				
+				Parse.Cloud.run('createCustomer',{
+					openId: id,
+				}).then( r => {
+					let token = r[0].token;
+					that.$store.commit('setToken', token);
+					console.log('r' + JSON.stringify(r));
+				}).catch( e => {
+					console.log('e' + JSON.stringify(e));
+				})
+				
+				return 1;
+			}
+			
+			
 			let that = this;
 			console.log(r.mp.detail);
 			let wxProfile = r.mp.detail.userInfo; // 等下更新用户信息用
@@ -55,12 +78,11 @@ export default {
 						Parse.Cloud.run('GetOpenId', res)
 							.then(r => {
 								console.log('最终的结果' + JSON.stringify(r));
-								console.log(r.openid, 6666666666)
+								console.log('Openid:' + r.openid);
 								if (r.openid) {
-									//  邮箱就是 openid@qq.com
-									// 密码就是
+									that.$store.commit('setOpenId', r.openid);
+									that.connectMagento("test123456")
 									uni.navigateBack({});
-									
 								}
 							})
 							.catch(e => {
@@ -73,6 +95,9 @@ export default {
 
 	},
 	
+	computed:{
+		...mapState(['order', 'openid', 'token']),
+	},
 };
 </script>
 
