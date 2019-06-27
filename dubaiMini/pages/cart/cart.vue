@@ -22,11 +22,19 @@
 								<view class="text-gray text-sm">
 									<text class=" text-red  margin-right-xs"></text>套餐选择: {{x.pkgName}}</view>
 								<view class="text-grey text-sm"></view>
+								
+								<view class="text-gray text-sm">
+									<text class=" text-red  margin-right-xs"></text>票种选择: {{x.optionTitle}}</view>
+								<view class="text-grey text-sm"></view>
+								
+								<view class="text-gray text-sm">
+									<text class=" text-red  margin-right-xs"></text>签到日期: {{x.checkinDate}}</view>
+								<view class="text-grey text-sm"></view>
 							</view>
 							
 							<view>
 								<view class="padding flex flex-wrap justify-between align-center bg-white">
-									<button @click="deleteItem(x.pkg)" class="cu-btn round">删除</button>
+									<button @click="deleteItem(x)" class="cu-btn round">删除</button>
 								</view>
 								
 								<view class="text-gray text-sm">
@@ -40,9 +48,9 @@
 					<view class="cu-bar  bg-white padding-lr solid margin-bottom">
 						<text>购买数量</text>
 						<view class="add flex align-center">
-							<button type="default" @click="updateQuantity(x.pkg, -1)" class="padding-lr text-bold text-xl">-</button>
+							<button type="default" @click="updateQuantity(x, -1)" class="padding-lr text-bold text-xl">-</button>
 							<text class="margin-lr">{{x.quantity}}</text>
-							<button type="default" @click="updateQuantity(x.pkg, 1)" class="padding-lr text-bold text-xl">+</button>
+							<button type="default" @click="updateQuantity(x, 1)" class="padding-lr text-bold text-xl">+</button>
 						</view>
 					</view>
 				</div>
@@ -98,6 +106,8 @@
     onShow() {
 		this.getTotalPrice();
 		console.log(this.cart);
+		
+		console.log("Cart id: " + this.cartId);
     },
 	
 	
@@ -141,14 +151,14 @@
     methods: {
 		
 			// Update quantity in the cart
-			updateQuantity(pkg, changes) {
-				this.$store.commit('updateCart', {pkg: pkg, changes: changes});
+			updateQuantity(x, changes) {
+				this.$store.commit('updateCart', {x: x, changes: changes});
 				this.reload();
 			},
 			
 			// Delete item in the cart
-			deleteItem(pkg) {
-				this.$store.commit('deleteFromCart', pkg);
+			deleteItem(x) {
+				this.$store.commit('deleteFromCart', x);
 				this.reload();
 			},
 			
@@ -380,7 +390,7 @@
 
 	
     computed: {
-		...mapState(['cart']),
+		...mapState(['cart', 'cartId']),
 		
 		cart: {
 			get() {

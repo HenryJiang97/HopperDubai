@@ -21,6 +21,8 @@ const state = {
 		// Token
 		token: '',
 		
+		// Cart id
+		cartId: '',
 	}
 
 export default state

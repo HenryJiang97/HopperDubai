@@ -30,97 +30,121 @@ const mutations = {
 		
 	},
 	
-	addToCart(state, x){
-		if (state.cart[x.pkg] != null) {
+	addToCart(state, x){    // Add products to cart
+		if (state.cart[x.pkg + x.optionId + x.checkinDate] != null) {
 			console.log("In the cart")
-			state.cart[x.pkg].quantity += x.quantity;
+			state.cart[x.pkg + x.optionId + x.checkinDate].quantity += x.quantity;
 		}
 		else {
 			console.log("New added")
-			state.cart[x.pkg] = {
+			state.cart[x.pkg + x.optionId + x.checkinDate] = {
 				detail: x.product,
 				quantity: x.quantity,
 				pkg: x.pkg,
 				pkgName : x.pkgName,
+				option: x.optionId,
+				optionTitle: x.optionTitle,
 				price : x.price,
-				pic : x.pic
+				pic : x.pic,
+				checkinDate : x.checkinDate,
 			};
 		}
+		// console.log("cart: ");
+		// console.log(state.cart);
 	},
 	
-	deleteFromCart(state, pkg) {
-		// console.log(pkg);
-		delete state.cart[pkg];
+	
+	deleteFromCart(state, x) {    // Delete products in cart
+		console.log(state.cart);
+		delete state.cart[x.pkg + x.option + x.checkinDate];
 	},
 
-	updateCart(state, x) {	
-		var quant = state.cart[x.pkg].quantity;
+	updateCart(state, update) {	   // Update the quantity of products in cart
+		var quant = state.cart[update.x.pkg + update.x.option + update.x.checkinDate].quantity;
 		
-		if (quant + x.changes >= 1) {
-			quant += x.changes;
+		if (quant + update.changes >= 1) {
+			quant += update.changes;
 		}
 		
-		state.cart[x.pkg].quantity = quant;
+		state.cart[update.x.pkg + update.x.option + update.x.checkinDate].quantity = quant;
+		console.log(state.cart);
 	},
+	
+	setCartId(state, id) {    // Set cart id in state
+		state.cartId = id;
+	},
+	
 
-	addToOrder(state) {
+	addToOrder(state) {    // Add cart existing to order
 		var new_obj = Object.assign({}, state.cart);  // Deep copy
 		state.order.push(new_obj);
 		console.log(state.order);
 		
-
+		// Place order to the server
+		const ret = post('/checkoutapi/placeorder', {"param":{
+				"token": state.token,
+				"cartId": state.cartId,
+				"paymentMethod": {
+					"method": "paybycredit"
+				 }
+			},
+		}).then(r => {
+			console.log(r);
+		}).catch(e => {
+			console.log("Error placing order:" + e);
+		});
 	},
 	
 		
-	emptyCart(state) {
+	emptyCart(state) {    // Empty the cart
 		for (var key in state.cart) {
 			delete state.cart[key];
 		}
 	},
 
-	setLang(state, v) {
-		state.language = v
-
-		if (v === 1) {
-			uni.setTabBarItem({
-				index: 0,
-				text: 'Home',
-				iconPath: './static/img/home.png',
-				selectedIconPath: './static/img/home1.png'
-			})
-			uni.setTabBarItem({
-				index: 1,
-				text: 'Events',
-				iconPath: './static/img/hot1.png',
-				selectedIconPath: './static/img/hot.png'
-			})
-			uni.setTabBarItem({
-				index: 2,
-				text: 'User Center',
-				iconPath: './static/img/settings.png',
-				selectedIconPath: './static/img/settings1.png'
-			})
-		} else {
-			uni.setTabBarItem({
-				index: 0,
-				text: '首页',
-				iconPath: './static/img/home.png',
-				selectedIconPath: './static/img/home1.png'
-			})
-			uni.setTabBarItem({
-				index: 1,
-				text: '活动',
-				iconPath: './static/img/hot1.png',
-				selectedIconPath: './static/img/hot.png'
-			})
-			uni.setTabBarItem({
-				index: 2,
-				text: '用户中心',
-				iconPath: './static/img/settings.png',
-				selectedIconPath: './static/img/settings1.png'
-			})
-		}
-	},
+// 	setLang(state, v) {
+// 		state.language = v
+// 
+// 		if (v === 1) {
+// 			uni.setTabBarItem({
+// 				index: 0,
+// 				text: 'Home',
+// 				iconPath: './static/img/home.png',
+// 				selectedIconPath: './static/img/home1.png'
+// 			})
+// 			uni.setTabBarItem({
+// 				index: 1,
+// 				text: 'Events',
+// 				iconPath: './static/img/hot1.png',
+// 				selectedIconPath: './static/img/hot.png'
+// 			})
+// 			uni.setTabBarItem({
+// 				index: 2,
+// 				text: 'User Center',
+// 				iconPath: './static/img/settings.png',
+// 				selectedIconPath: './static/img/settings1.png'
+// 			})
+// 		} else {
+// 			uni.setTabBarItem({
+// 				index: 0,
+// 				text: '首页',
+// 				iconPath: './static/img/home.png',
+// 				selectedIconPath: './static/img/home1.png'
+// 			})
+// 			uni.setTabBarItem({
+// 				index: 1,
+// 				text: '活动',
+// 				iconPath: './static/img/hot1.png',
+// 				selectedIconPath: './static/img/hot.png'
+// 			})
+// 			uni.setTabBarItem({
+// 				index: 2,
+// 				text: '用户中心',
+// 				iconPath: './static/img/settings.png',
+// 				selectedIconPath: './static/img/settings1.png'
+// 			})
+// 		}
+// 	},
 
 	setNotice(state, v) {
 		state.globalNotice = v

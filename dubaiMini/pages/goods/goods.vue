@@ -43,9 +43,9 @@
 			<!-- 日期选择 -->
 			<view class="cu-form-group">
 				<view class="title">日期选择</view>
-				<picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange">
+				<picker mode="date" :value="date" start="2015-09-01" end="2021-09-01" @change="DateChange">
 					<view class="picker">
-						{{date}}
+						{{checkinDate}}
 					</view>
 				</picker>
 			</view>
@@ -99,7 +99,7 @@
 						<div class="cu-card">
 							<view class="flex justify-start ">
 								<view class="margin-tb-sm text-center margin-left">
-									<button class="cu-btn round" :class="{'cu-btn round line-red': option.dropdown_id == optionSelection}" v-for="(option, idx) in optionsArr" :key='idx' v-on:tap="selectOption(option.dropdown_id)">{{option.dropdown_title}}</button>
+									<button class="cu-btn round" :class="{'cu-btn round line-red': option.dropdown_id == optionSelection}" v-for="(option, idx) in optionsArr" :key='idx' v-on:tap="selectOption(option.dropdown_id, option.dropdown_title)">{{option.dropdown_title}}</button>
 								</view>
 							</view>
 						</div>
@@ -185,28 +185,28 @@ export default {
 			desc:'',
 			modalName: null,
 			productID: '',
-			skuID: '',
+			skuID: '',    // Product skuid
+			cartId: '',
 			groupBuys:[],
 			swiperList: [],
 			packages: [],
-			packageSelection: null,
+			packageSelection: null,    // Package id, also name as timeslot
 			options: [],    // Options for each package
 			optionsArr : [],    // Save the option arr for the first package
 			optionSelection: null,    // Represents in option id
-			purchaseNum: 1,
-			checkin: '',
-			timeslot: ',',
+			optionTitle: '',    // Represents the option title
+			purchaseNum: 1,    // Quantity
 			modalImage : '',
-			date: '2018-12-25',  // Just for test
+			checkinDate: '2018-12-25',  // Just for test
 		};
 	},
 	
 	onLoad(){
-		this.date = this.getCurrentDate();
+		this.checkinDate = this.getCurrentDate();
 	},
 	
 	computed:{	
-		...mapState(['cart', 'order', 'token']),
+		...mapState(['cart', 'order', 'token', 'cartId']),
 	},
 	
 	methods: {
@@ -287,48 +287,73 @@ export default {
 			
 			let price = this.price;    // Price for single product
 	
-			
-			// Get package name and option id
-			let option = this.optionSelection;
-			let optionId = 0;
+			// Get package name
 			var pkgName = '';    // Package name
 			for (var i = 0; i < this.packages.length; i++) {
 				if (pkg == p[i].id){
 					pkgName = p[i].title;
-					optionId = (option == 0) ? p[i].options[0].dropdown_id : p[i].options[1].dropdown_id;
 					break;
 				}	
 			}
+			
+			
+			// Get option id and name
+			let optionId = this.optionSelection;
 			console.log(optionId);
+			let optionTitle = this.optionTitle;
 			
 			// Get image for modal
 			let pic = this.modalImage;
 			
+			let checkinDate = this.checkinDate;
 			
 			// Add the item to store.state
-			this.$store.commit('addToCart',{product:this.product, quantity: quantity, pkg: pkg, pkgName: pkgName, price: price, pic: pic});
+			this.$store.commit('addToCart',{
+				product:this.product,
+				quantity: quantity,
+				pkg: pkg,
+				pkgName: pkgName,
+				optionId: optionId,
+				optionTitle: optionTitle,
+				price: price,
+				pic: pic,
+				checkinDate: checkinDate,
+			});
 			
 			// Hide the modal after adding to the cart
 			this.hideModal();
 			
 			
 			// Push the mutation to the server end
-			// const ret = await post('/checkoutapi/addToCart', {"param":{
-			// 	"token":this.token,
-			// 	"items":[
-			// 		{
-			// 			"sku" : this.skuID,
-			// 			"options" : [
-			// 				{
-			// 					"quantity" : quantity
-			// 				}
-			// 			]
-			// 		}
-			// 	],
-			// 	},
-			// 	},
-			// 	);
-		
+			const ret = post('/checkoutapi/addToCart', {"param":{
+				"token":this.token,
+				"items":[
+					{
+						"sku" : this.skuID,
+						"checkin" : this.checkinDate,
+						"timeslot" : this.packageSelection,
+						"options" : [
+							{
+								"id" : this.optionSelection,
+								"quantity" : this.purchaseNum,
+							}
+						]
+					}
+				],
+			}}).then( r => {
+				// Ret format => {success: true, code: "200", message: "Add to cart successfully.", quote_id: "2158"}
+				console.log(r);
+				this.cartId = r[0].quote_id;
+				console.log("Cart id = ");
+				console.log(this.cartId);
+				
+				// Save cart id to the state
+				this.$store.commit('setCartId', this.cartId);
+				
+			}).catch(e => {
+				console.log("error");
+			});
+
 		},
 		
 		selectPkg(id) {    // Selected package by the consumer
@@ -336,10 +361,12 @@ export default {
 			console.log(this.packageSelection);
 		},
 		
-		selectOption(selection) {
-			this.optionSelection = selection;
+		selectOption(optionId, optionTitle) {
+			this.optionSelection = optionId;
+			this.optionTitle = optionTitle;
 			console.log("Option: ");
 			console.log(this.optionSelection);
+			console.log(this.optionTitle);
 		},
 		
 		showModal(e) {    // Display modal
@@ -349,6 +376,8 @@ export default {
 		hideModal(e) {    // Hide the modal
 			this.modalName = null;
 		},
+		
+		
 		
 		jump(x){
 			// 在产品详情页面，想要看任何功能都要先登录
@@ -376,7 +405,7 @@ export default {
 		},
 		
 		DateChange(e) {    // Update date
-			this.date = e.detail.value;
+			this.checkinDate = e.detail.value;
 		},
 		
 		getCurrentDate() {    // Get current date
@@ -384,31 +413,6 @@ export default {
 			return date;
 		}
 	},
-	
-	onShareAppMessage: function( options ){
-	　　var that = this;
-	　　// 设置菜单中的转发按钮触发转发事件时的转发内容
-	　　var shareObj = {
-	　　　　title: "Wudi 微信小程序商城Demo",        // 默认是小程序的名称(可以写slogan等)
-	　　　　success: function(res){
-	　　　　　　// 转发成功之后的回调
-	　　　　　　if(res.errMsg == 'shareAppMessage:ok'){
-	　　　　　　}
-	　　　　},
-	　　　　fail: function(){
-	　　　　　　// 转发失败之后的回调
-	　　　　　　if(res.errMsg == 'shareAppMessage:fail cancel'){
-	　　　　　　　　// 用户取消转发
-	　　　　　　}else if(res.errMsg == 'shareAppMessage:fail'){
-	　　　　　　　　// 转发失败，其中 detail message 为详细失败信息
-	　　　　　　}
-	　　　　},
-	　　　　complete: function(){
-	　　　　　　// 转发结束之后的回调（转发成不成功都会执行）
-	　　　　}
-	　　};
-		return shareObj
-	}
 };
 </script>
 
