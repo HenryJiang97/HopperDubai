@@ -33,9 +33,9 @@
 							</view>
 							
 							<view>
-								<view class="padding flex flex-wrap justify-between align-center bg-white">
+								<!-- <view class="padding flex flex-wrap justify-between align-center bg-white">
 									<button @click="deleteItem(x)" class="cu-btn round">删除</button>
-								</view>
+								</view> -->
 								
 								<view class="text-gray text-sm">
 									<text class=" text-red  margin-right-xs"></text>¥ {{x.price}}</view>
@@ -48,16 +48,16 @@
 					<view class="cu-bar  bg-white padding-lr solid margin-bottom">
 						<text>购买数量</text>
 						<view class="add flex align-center">
-							<button type="default" @click="updateQuantity(x, -1)" class="padding-lr text-bold text-xl">-</button>
+							<!-- <button type="default" @click="updateQuantity(x, -1)" class="padding-lr text-bold text-xl">-</button> -->
 							<text class="margin-lr">{{x.quantity}}</text>
-							<button type="default" @click="updateQuantity(x, 1)" class="padding-lr text-bold text-xl">+</button>
+							<!-- <button type="default" @click="updateQuantity(x, 1)" class="padding-lr text-bold text-xl">+</button> -->
 						</view>
 					</view>
 				</div>
 				
 				
 				<view class="cu-list bg-white menu margin-top solid-top" v-if="totalQuantity != 0">
-					<view @tap="paymentSelect(0)" class="cu-item " >
+					<view class="cu-item " >
 						<view class="content">
 							<image src="/static/wechat.svg" class="png" mode="aspectFit"></image>
 							<text class="text-grey">微信支付</text>
@@ -65,29 +65,53 @@
 							
 						<text :class="{'cuIcon-check': paymentSelection == 0}"></text>
 					</view>
-						
-					<view @tap="paymentSelect(1)" class="cu-item" >
-						<view class="content">
-							<image src="/static/alipay.svg" class="png" mode="aspectFit"></image>
-							<text class="text-grey">支付宝支付</text>
-						</view>
-						
-						<text :class="{'cuIcon-check': paymentSelection == 1}"></text>
-					</view>
 					
-					<!-- Blank bar for format -->
-					<view class="bg-white padding"></view>
-					<view class="bg-white padding"></view>
+					
+					<view class="action" v-if="placeOrderError == true">
+						<view class="cu-load bg-red erro">下单失败</view>
+					</view>
 				</view>
 				
 				
+				<!-- Show payment modal -->
+				<view class="cu-modal bottom-modal" :class="modalName == 'bottomModal' ? 'show' : ''">
+				<view class="cu-dialog">
+					<view class="cu-bar bg-white justify-end">
+						<view class="action text-blue" @tap="hideModal">
+							<p></p>
+							<text class="cuIcon-close"></text>
+						</view>
+					</view>
+
+					<view class="cu-card no-card">
+						<view class="flex align-center">
+							
+							<view class="cu-item " >
+								<view class="align-center">
+									<text>微信支付</text>
+								</view>
+							</view>
+							
+						</view>
+					</view>
+
+					<div class="size_chat" style="margin-bottom: 200upx;"></div>
+					
+					<view class="cu-bar bg-white tabbar border shop footer_bar">
+			
+					<view class="bg-red submit" @tap="pay()">立即支付</view>
+				</view>
+					
+				</view>
+			</view>
+				<!-- Show payment modal -->
 				
 		
 				<!-- 支付底栏 -->
 				<view class="cu-bar bg-white tabbar border shop foot">
 					<view class="margin-right" style="text-align: right; width: 50%;"> 实付款:<text class="margin-left text-xl">¥ {{totalPrice}} </text> </view>
 				
-					<view class="bg-red submit" @tap="addToOrder()">立即支付</view>
+					<view class="bg-red submit" @tap="addToOrder()">下单</view>
 				</view>
 			
 		</div>
@@ -104,6 +128,8 @@
   } from "../../utils";
   export default {
     onShow() {
+		this.placeOrderError = false;
+		
 		this.getTotalPrice();
 		console.log(this.cart);
 		
@@ -144,6 +170,7 @@
 		totalPrice: 0,
 		totalQuantity: 0,
 		paymentSelection: 0,
+		placeOrderError: false,
       };
     },
 	
@@ -181,15 +208,62 @@
 			},
 			
 			addToOrder() {
-				this.$store.commit('addToOrder');
-				this.jump('success');
-				this.reload();
-				this.emptyCart();
+				let that = this;
+				
+				// Place order to the server
+				const ret = post('/checkoutapi/placeorder', {"param":{
+						"token": this.token,
+						"cartId": this.cartId,
+						"paymentMethod": {
+							"method": "paybycredit"
+						 }
+					},
+				}).then(r => {
+					console.log(r);
+					
+					// Judge place order status
+					if (r[0].success == true) {
+						console.log("Successfully placed order");
+						that.placeOrderError = false;
+						
+						// Store the order to state
+						that.$store.commit('addToOrder', r[0].orderid);
+						that.reload();
+						that.emptyCart();
+						
+						// Show payment modal
+						this.showModal();
+						
+					} else {
+						that.placeOrderError = true;
+						console.log("下单失败");
+						that.emptyCart();
+						that.reload();
+					}
+
+				}).catch(e => {
+					that.placeOrderError = true;
+					console.log("Error placing order:" + e);
+					that.emptyCart();
+					that.reload();
+				});
 			},
+			
 			
 			emptyCart() {
 				this.$store.commit('emptyCart');
 			},
+			
+			pay() {    // Make payment
+				Parse.Cloud.run('pay', {orderId : orderId, token: this.token}).then( r => {
+					console.log("Made payment successfully");
+					
+					
+				}).catch( e => {
+					console.log("Payment error: " + e);
+				})				
+			},
+			
 		
 			// Navigate to certain page
 			jump(pageName) {
@@ -205,11 +279,14 @@
 				});
 			},
 			
-			addressbook(){
-				uni.navigateTo({
-					url:'../addressSelect/addressSelect',
-				})
+			showModal() {    // Display modal
+				this.modalName = 'bottomModal';
 			},
+			
+			hideModal(e) {    // Hide the modal
+				this.modalName = null;
+			},
+
 			// ListTouch触摸开始
 			ListTouchStart(e) {
 				this.listTouchStart = e.touches[0].pageX
@@ -390,7 +467,7 @@
 
 	
     computed: {
-		...mapState(['cart', 'cartId']),
+		...mapState(['cart', 'cartId', 'token', 'order']),
 		
 		cart: {
 			get() {

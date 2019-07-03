@@ -94,6 +94,12 @@ export default {
 		this.getHomeData()
 	},
 	onShow() {
+		console.log('开始检查登录情况');
+		this.$store.commit('needLogin');
+		this.wxProfile = this.$store.state.wxProfile
+		// this.printOpenId();
+		console.log(this.token);
+		
 		this.getItemsInCart();
 		this.getItemsInCart();
 	},

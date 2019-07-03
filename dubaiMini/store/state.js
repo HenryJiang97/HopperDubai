@@ -13,7 +13,7 @@ const state = {
 		cart:{},
 		
 		// Order
-		order:[],
+		order:{},
 		
 		// Openid
 		openid:'',
@@ -23,6 +23,9 @@ const state = {
 		
 		// Cart id
 		cartId: '',
+		
+		// Paid or not
+		ifPaid: {},
 	}
 
 export default state

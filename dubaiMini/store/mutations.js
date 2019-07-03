@@ -75,24 +75,15 @@ const mutations = {
 	},
 	
 
-	addToOrder(state) {    // Add cart existing to order
+	addToOrder(state, orderId) {    // Add cart existing to order
+		state.ifPaid[orderId] = false;
+	
 		var new_obj = Object.assign({}, state.cart);  // Deep copy
-		state.order.push(new_obj);
-		console.log(state.order);
 		
-		// Place order to the server
-		const ret = post('/checkoutapi/placeorder', {"param":{
-				"token": state.token,
-				"cartId": state.cartId,
-				"paymentMethod": {
-					"method": "paybycredit"
-				 }
-			},
-		}).then(r => {
-			console.log(r);
-		}).catch(e => {
-			console.log("Error placing order:" + e);
-		});
+		state.order[orderId] = new_obj;
+		
+		console.log("Order: ");
+		console.log(state.order);
 	},
 	
 		

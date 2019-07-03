@@ -19,7 +19,7 @@
 			<div class="cu-bar bg-white solid padding-lr" >
 				<div class="seller">
 					<view class="cu-avatar radius sm margin-right-sm" style="margin-left: 0;"></view>
-					订单 {{index + 1}}
+					订单号 {{index}}
 					<text class="cuIcon-right"></text>
 				</div>
 				
@@ -32,6 +32,14 @@
 					<text class="cu-tag line-red text-red radius">{{orderLen[index]}}</text>
 				</div>
 			</div>
+			
+			
+			<!-- 支付 -->
+			<div class="cu-bar bg-white solid padding-lr" >
+				<button class="text-blue" v-if="ifPaid[index] == false" @tap="pay(index)">立即付款</button>
+				<label class="text-green" v-if="ifPaid[index] == true">已支付</label>
+			</div>
+			<!-- 支付 -->
 		
 				<view class="cu-card article no-card" v-for="(p,i) in x" :key="i">
 					<view class="cu-item shadow padding-tb-sm bg-gray">
@@ -80,8 +88,8 @@ import { mapState } from 'vuex'
 export default {
 	data() {
 		return {
-			orderLen:[],
-			totalOrderPrice: [],
+			orderLen: {},
+			totalOrderPrice: {},
 			TabCur: 0,
 			scrollLeft: 0,
 		};
@@ -89,30 +97,42 @@ export default {
 	onLoad() {
 		console.log(this.order);
 		this.getOrderLen();
+		// console.log(this.orderLen);
 		this.getTotalOrderPrice();
-		console.log(this.totalOrderPrice);
+		// console.log(this.totalOrderPrice);
 	},
 	
 	computed:{	
-		...mapState(['cart', 'order']),
+		...mapState(['cart', 'order', 'ifPaid', 'token']),
 	},
 	
 	methods: {
 		getOrderLen(){
-			for (var i = 0; i < this.order.length; i++) {
-				this.orderLen.push(Object.keys(this.order[i]).length);
+			for (var key in this.order) {
+				this.orderLen[key] = Object.keys(this.order[key]).length - 1;
 			}
 		},
 		
 		getTotalOrderPrice() {
 			var price = 0;
-			for (var i = 0; i < this.order.length; i++) {
+			
+			for (var key in this.order) {
 				price = 0;
-				for (var key in this.order[i]) {
-					price += (this.order[i][key].price * this.order[i][key].quantity);
+				for (var k in this.order[key]) {
+					price += (this.order[key][k].price * this.order[key][k].quantity);
 				}
-				this.totalOrderPrice.push(price);
+				this.totalOrderPrice[key] = price;
 			}
+		},
+		
+		pay(orderId) {    // Make payment
+			Parse.Cloud.run('pay', {orderId : orderId, token: this.token}).then( r => {
+				console.log(r);
+				
+				
+			}).catch( e => {
+				console.log("Payment error: " + e);
+			})
 		},
 		
 		tabSelect(e) {

@@ -79,6 +79,8 @@
 									</view>
 							</view>
 							
+							
+							
 						</view>
 					</view>
 
@@ -115,6 +117,12 @@
 							</div>
 						</div>
 						<!-- 购买数量 -->
+						
+						<!-- 返回信息 -->
+						<div>
+							<text>{{addToCartStatus}}</text>
+						</div>
+						<!-- 返回信息 -->
 					</div>
 
 					<div class="size_chat" style="margin-bottom: 200upx;"></div>
@@ -198,6 +206,7 @@ export default {
 			purchaseNum: 1,    // Quantity
 			modalImage : '',
 			checkinDate: '2018-12-25',  // Just for test
+			addToCartStatus: '',    // Success or not when adding to the cart
 		};
 	},
 	
@@ -206,7 +215,7 @@ export default {
 	},
 	
 	computed:{	
-		...mapState(['cart', 'order', 'token', 'cartId']),
+		...mapState(['cart', 'order', 'token', 'cartId']),    // Load from state
 	},
 	
 	methods: {
@@ -214,15 +223,7 @@ export default {
 			// Parse.Cloud.run('pay').then( r => {
 			// 	console.log('r' + JSON.stringify(r));
 			// }).catch( e => console.log('e' + JSON.stringify(e))	)
-			this.launchGroupBuy('test1')
-		},
-		
-		launchGroupBuy(sku){
-			Parse.Cloud.run('newGroupBuy',{
-				sku:sku
-			}).then( r => {
-				console.log(r);
-			}).catch( e => console.log('e' + JSON.stringify(e))	)
+			// this.launchGroupBuy('test1')
 		},
 		
 		scrollLeft(e){
@@ -293,7 +294,7 @@ export default {
 				if (pkg == p[i].id){
 					pkgName = p[i].title;
 					break;
-				}	
+				}
 			}
 			
 			
@@ -307,23 +308,7 @@ export default {
 			
 			let checkinDate = this.checkinDate;
 			
-			// Add the item to store.state
-			this.$store.commit('addToCart',{
-				product:this.product,
-				quantity: quantity,
-				pkg: pkg,
-				pkgName: pkgName,
-				optionId: optionId,
-				optionTitle: optionTitle,
-				price: price,
-				pic: pic,
-				checkinDate: checkinDate,
-			});
-			
-			// Hide the modal after adding to the cart
-			this.hideModal();
-			
-			
+			let that = this;
 			// Push the mutation to the server end
 			const ret = post('/checkoutapi/addToCart', {"param":{
 				"token":this.token,
@@ -342,16 +327,45 @@ export default {
 				],
 			}}).then( r => {
 				// Ret format => {success: true, code: "200", message: "Add to cart successfully.", quote_id: "2158"}
+				console.log("Add to cart status: ");
 				console.log(r);
-				this.cartId = r[0].quote_id;
-				console.log("Cart id = ");
-				console.log(this.cartId);
+				console.log(r[0].success);
 				
-				// Save cart id to the state
-				this.$store.commit('setCartId', this.cartId);
+				// Judge place order status
+				if (r[0].success === true) {
+					that.addToCartStatus = "加入购物车成功";
+					console.log("Add to cart successfully");
+					
+					// Add the item to store.state
+					that.$store.commit('addToCart',{
+						product:that.product,
+						quantity: quantity,
+						pkg: pkg,
+						pkgName: pkgName,
+						optionId: optionId,
+						optionTitle: optionTitle,
+						price: price,
+						pic: pic,
+						checkinDate: checkinDate,
+					});
+					
+					that.cartId = r[0].quote_id;
+					console.log("Cart id = ");
+					console.log(that.cartId);
+					
+					// Save cart id to the state
+					that.$store.commit('setCartId', that.cartId);		
+					
+					// Hide the modal after adding to the cart
+					that.hideModal();
+					
+				} else {
+					that.addToCartStatus = r[0].message;
+					console.log("Failed to add to cart");
+				}
 				
 			}).catch(e => {
-				console.log("error");
+				console.log("Add to cart error.");
 			});
 
 		},
