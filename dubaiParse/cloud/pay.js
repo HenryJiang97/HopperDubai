@@ -67,9 +67,7 @@ module.exports = {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, //设置content-type 头部
             }
 
-            return await axios({
-                
-            })
+            return await axios.post('','')
 
 
 

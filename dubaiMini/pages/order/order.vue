@@ -5,16 +5,9 @@
 				<block slot="content">我的订单</block>
 			</cu-custom>
 			
-		<!-- 	<scroll-view scroll-x class="bg-white nav" scroll-with-animation :scroll-left="scrollLeft">
-			<view class="cu-item" :class="index==TabCur?'text-green cur':''" v-for="(item,index) in category" :key="index" @tap="tabSelect" :data-id="index">
-				{{item}}
-			</view>
-		</scroll-view> -->
 		
-		
-		
-		
-		<div class="order_item" v-for="(x,index) in order" :key="index">
+		<!-- index => orderid -->
+		<div class="order_item" v-for="(x,index) in order" :key="index">   
 			
 			<div class="cu-bar bg-white solid padding-lr" >
 				<div class="seller">
@@ -46,20 +39,6 @@
 						
 						<view class="content">
 							<image :src="p.pic" mode="aspectFill"></image>
-							
-							<!-- <view class="content">
-								<view class="text-gray text-sm">
-									<text class=" text-red  margin-right-xs"></text>{{x.detail.name}}</view>
-								<view class="text-grey text-sm"></view>
-							
-								<view class="text-gray text-sm">
-									<text class=" text-red  margin-right-xs"></text>套餐: {{x.pkgName}}</view>
-								<view class="text-grey text-sm"></view>
-								
-								<view>
-									<view class="cu-tag bg-red light sm round">实际付款：¥ {{p.price}}</view>
-								</view>
-							</view> -->
 							
 							<view class="cu-item menu-avatar">
 								
@@ -100,10 +79,12 @@ export default {
 		// console.log(this.orderLen);
 		this.getTotalOrderPrice();
 		// console.log(this.totalOrderPrice);
+		console.log("Open id: ", this.openid);
+		
 	},
 	
 	computed:{	
-		...mapState(['cart', 'order', 'ifPaid', 'token']),
+		...mapState(['cart', 'order', 'ifPaid', 'token', 'openid']),
 	},
 	
 	methods: {
@@ -116,9 +97,9 @@ export default {
 		getTotalOrderPrice() {
 			var price = 0;
 			
-			for (var key in this.order) {
+			for (var key in this.order) {    // Key => order id
 				price = 0;
-				for (var k in this.order[key]) {
+				for (var k in this.order[key]) {    // Good id: ex.'28822019-07-04''
 					price += (this.order[key][k].price * this.order[key][k].quantity);
 				}
 				this.totalOrderPrice[key] = price;
@@ -126,9 +107,8 @@ export default {
 		},
 		
 		pay(orderId) {    // Make payment
-			Parse.Cloud.run('pay', {orderId : orderId, token: this.token}).then( r => {
+			Parse.Cloud.run('pay', {orderId : orderId, token: this.token, totalOrderFee: this.totalOrderPrice[orderId], openId: this.openid}).then( r => {
 				console.log(r);
-				
 				
 			}).catch( e => {
 				console.log("Payment error: " + e);

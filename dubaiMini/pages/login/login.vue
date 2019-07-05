@@ -79,8 +79,10 @@ export default {
 							.then(r => {
 								console.log('最终的结果' + JSON.stringify(r));
 								console.log('Openid:' + r.openid);
+								
 								if (r.openid) {
 									that.$store.commit('setOpenId', r.openid);
+									console.log(that.openId);
 									that.connectMagento("test123456")
 									uni.navigateBack({});
 								}
@@ -88,6 +90,7 @@ export default {
 							.catch(e => {
 								console.log('报错' + e);
 							});
+
 					}
 				}
 			});

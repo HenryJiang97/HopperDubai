@@ -19,18 +19,9 @@
 			</view>
 			<!-- 个人资料 -->
 			
-					<!-- <button type="primary" @click="connectMagento()">注册到magento</button> -->
 
 			<!-- 常用菜单 -->
 			<view class="cu-list col-1 grid sm-border" >
-				<!-- <view class="cu-item" @tap="jump('save')">
-					<view class="cuIcon-like">
-						<view class="cu-tag badge" >
-							<block >11</block>
-						</view>
-					</view>
-					<text>我的收藏</text>
-				</view> -->
 				<view class="cu-item" @tap="jump('order')">
 					<view class="cuIcon-form">
 						<view class="cu-tag badge" >
@@ -39,87 +30,8 @@
 					</view>
 					<text>我的订单</text>
 				</view>
-				<!-- <view class="cu-item" @tap="jump('address')">
-					<view class="cuIcon-addressbook">
-						<view class="cu-tag badge" >
-							<block >11</block>
-						</view>
-					</view>
-					<text>我的地址</text>
-				</view> -->
-			</view>
-			
-			
-			<!-- 常用菜单 -->
-			
-			<!-- 列表菜单 -->		
-				<!-- <view class="cu-list menu" :class="[menuBorder?'sm-border':'',menuCard?'card-menu margin-top':'']">
-				
-			
-				<view class="cu-item arrow" @tap="moneyhistory">
-					<view class="content">
-						<text class="cuIcon-moneybag "></text>
-						<text class="text-black">账户余额</text>
-					</view>
-					<view class="action">
-						
-						<text class="text-black text-bold">¥ 997.00</text>
-					</view>
-				</view>
-				
-				<view class="cu-item arrow" >
-					<navigator class="content" hover-class="none" open-type="redirect" url="">
-						<text class="cuIcon-like text-black"></text>
-						<text class="text-grey">我喜欢的</text>
-					</navigator>
-				</view>
-				
-				<view class="cu-item arrow" >
-					<navigator class="content" hover-class="none" open-type="redirect">
-						<text class="cuIcon-discover text-black"></text>
-						<text class="text-grey">我不喜欢的</text>
-					</navigator>
-				</view>
-				
-				<view class="cu-item" :class="menuArrow?'arrow':''" tap= "jump('timeline')">
-					<view class="content">
-						<text class="cuIcon-emojiflashfill text-black"></text>
-						<text class="text-grey">好友动态</text>
-					</view>
-					<view class="action">
-						<view class="cu-avatar-group">
-							<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
-							<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big81005.jpg);"></view>
-							<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big25002.jpg);"></view>
-							<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big91012.jpg);"></view>
-						</view>
-						<text class="text-grey text-sm">4 人</text>
-					</view>
-				</view>
-				
-				<view class="cu-item" :class="menuArrow?'arrow':''">
-					<view class="content">
-						<text class="cuIcon-activityfill text-black"></text>
-						<text class="text-grey">{{i18n.switchLanguage}}</text>
-					</view>
-					<view class="action">
-						<switch checked @change="changeLanguage" />
-					</view>
-				</view> -->
-		
-				
-				
-			</view>
-
-			
-			<!-- 列表菜单 -->			
+			</view>	
 		</div>
-
-	
-
-		
-
-		
 	</div>
 	
 	
@@ -138,13 +50,14 @@ export default {
 		// this.printOpenId();
 		console.log(this.token);
 	},
+	
 	onLoad() {
 		this.getOrderCount();
-		
-		// this.printf();
 	},
+	
 	created() {},
 	mounted() {},
+	
 	data() {
 		return {
 			wxProfile:{},
@@ -225,37 +138,11 @@ export default {
 			console.log('Users openid: ' + this.openid);
 		},
 		
-		printf() {
-			Parse.Cloud.run('hello').then(x => {
-				console.log(x);
-			}).catch(e => {
-				console.log("Error parsing");
-			})
-		},
-		
 		getOrderCount() {
-			this.orderCount = this.order.length;
+			this.orderCount = Object.keys(this.order).length;
 		},
 		
-		// connectMagento(){
-		// 	// this.$http({
-		// 	// 	url: '/restful/customers',
-		// 	// 	method: 'POST',
-		// 	// 	data: {
-		// 	// 		id: this.$store.state.openId
-		// 	// 	},
-		// 	// 	success: res => {
-		// 	// 		console.log(res)
-		// 	// 	},
-		// 	// 	fail: () => {},
-		// 	// 	complete: () => {}
-		// 	// });
-		// 	let Uid = Parse.User.current().toJSON().authData.weapp.id
-		// 	Parse.Cloud.run('customers',{id: Uid})
-		// 	.then( r => console.log('r' + JSON.stringify(r)))
-		// 	.catch( e => console.log('e' + JSON.stringify(e)))
-		// }
-		// ,
+
 		jump(pageName) {
 			uni.navigateTo({
 				url: `../${pageName}/${pageName}`,
@@ -264,21 +151,14 @@ export default {
 				complete: () => {}
 			});
 		},
-		changeLanguage(e) {
-			console.log('修改语言' + e.target.value);
-			if (e.target.value) {
-				this.$i18n.locale = 'zh-CN';
-			} else {
-				this.$i18n.locale = 'en-US';
-			}
-		},
-		
-		
 	},
+	
 	computed: {
 		...mapState(['order', 'openid', 'token']),
 	},
 };
+
+
 </script>
 <style scoped>
 

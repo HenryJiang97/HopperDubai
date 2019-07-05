@@ -3,6 +3,8 @@ let Publish = require('./publish')
 const wechatConfig = require('../wechat-config')
 const { getAccessToken } = require('../tools/access-token')
 const q = require('../tools/request')
+let jsontoxml = require('jsontoxml')
+const uuid = require('uuid/v4');
 
 for (x in Publish){
   Parse.Cloud.define(x, Publish[x])
@@ -120,7 +122,12 @@ Parse.Cloud.define('pay', async req => {
   var crypto = require('crypto'); //加载加密文件
   const axios = require('axios');
 
-  // md5
+  let tk = req.params.token;    // Consumer's token
+  let oId = req.params.orderId;    // Order id
+  let openId = req.params.openId;    // User openid
+  let totalFee = req.params.totalOrderFee;    // Total order fee
+
+  // md5 function
   function md5(data) {
     var md5 = crypto.createHash('md5');
     return md5.update(data).digest('hex');
@@ -129,70 +136,90 @@ Parse.Cloud.define('pay', async req => {
   // 进行数字签名
   function calculateVerifySign(contents) {
     //1.对参数进行排序，然后用a=1&b=2..的形式拼接
-    var sortStr = '';
-    for (var key of Object.keys(contents).sort()) {
-      sortStr = sortStr + key + '=' + contents[key] + '&';
-    }
+    var string1 = '';
 
-    //对token进行md5，得到的结果追加到sortStr之后
-    var tokenMd5 = md5('5cbfb079f15b150122261c8537086d77a');
-    var tempStr = sortStr + tokenMd5;
+    let orderedParams = [];
+    Object.keys(contents).sort().forEach(key => {
+      orderedParams[key] = contents[key]
+    })
 
-    console.log('tempStr:', tempStr);
+    console.log(orderedParams);
 
-    //对tempStr 在进行一次md5加密得到verifySign
-    var verifySign = md5(tempStr);
-
-    console.log('veirfySign:', verifySign);
-    return verifySign;
-  }
-
-  module.exports = {
-    pay: async req => {
-      let reqUrl = '/securepay'
-
-      if (reqUrl == '/securepay') {
-        let token = '5cbfb079f15b150122261c8537086d77a'
-        let nowTime = new Date()
-        let randomReference = 'test_' + nowTime.getTime()
-        
-        let contents = {
-          'merchantNo': '200043',
-          'storeNo': '300014',
-          'currency': 'USD',
-          'rmbAmount': '0.1',
-          'description': 'testDescription',
-          'note': 'testNote',
-          'ipnUrl': 'http://nengjtian.s1.natapp.cc/login/test',
-          'callbackUrl': 'http://nengjtian.s1.natapp.cc/login/test2?rmbAmount={rmbAmount}',
-          'terminal': 'ONLINE',
-          'vendor': 'wechatpay',
-          'timeout': '120',
-          'reference': randomReference   //商户支付流水号，要求不能重复
-        }
-
-        //计算数字签名
-        var verifySign = calculateVerifySign(contents);
-
-        //把数字签名加到请求参数中 
-        contents.verifySign = verifySign;
-        
-        
-        //发送http post 请求到yuansfer
-        var opt = {
-            host: 'mapi.yuansfer.yunkeguan.com',
-            port: '80',
-            path: '/appTransaction/v2/securepay', //斜杠开头
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, //设置content-type 头部
-        }
-
-        return await axios({
-                
-        })
+    let ary = [];
+    for (let i in orderedParams) {    
+      if (orderedParams[i] != '') {
+        ary.push(i + '=' + orderedParams[i]);
       }
     }
+
+    let final = ary.join('&');
+    console.log('最终' + JSON.stringify(final))
+
+    // sign = Md5(原字串&key=商戶密鑰). toUpperCase
+    let password = '51e3356e92070df89807eb816f0d2b26';
+    console.log("Final: ", final + '&' + 'key=' + password);
+    var sign = md5(final + '&' + 'key=' + password).toUpperCase();
+
+    console.log("sign: ", sign);
+    return sign;
   }
+
+  function payment() {
+    // Generate a random 32-bit uuid
+    var random = uuid().replace(/-/g, '');
+
+    // Generate initialization contents
+    let init_contents = {
+      'service': 'pay.weixin.jspay',
+      'mch_id': '131570000084',
+      'out_trade_no': oId,
+      'body': 'TestPay',    // Products description
+      'sub_openid': openId,    // Empty when testing
+      'sub_appid': 'wxfe068fc57f348293',
+      'total_fee': '2',
+      'mch_create_ip': '127.0.0.1',    // 訂單生成的機器 IP
+      'notify_url': 'www.baidu.com',    // 接收平臺通知的URL
+      'nonce_str': random,    // 隨機字串，不長於 32 位
+    };
+
+    console.log("Origin XML: ", "<xml>" + jsontoxml(init_contents) + "</xml>");
+
+    //计算数字签名
+    var verifySign = calculateVerifySign(init_contents);
+
+    //把数字签名加到请求参数中 
+    init_contents.sign = verifySign;
+
+    let init_contents_xml = "<xml>" + jsontoxml(init_contents) + "</xml>";
+    console.log("XML:");
+    console.log(init_contents_xml);
+
+    //发送http post 请求, 获取返回参数
+    var appId = '';
+    var timeStamp = '';
+    var nonceStr = '';
+    var package = '';
+    var signType = '';
+    var paySign = '';
+    let r = axios.post('https://gateway.wepayez.com/pay/gateway', init_contents_xml).then( r => {
+      console.log("success!!!");
+      console.log(r.data);
+    }).catch( e => {
+      console.log(e);
+    });
+  }
+
+  payment();
+
+  // // Generate jsPaymentContent
+  // let jsPaymentContents = {
+  //   'appId': '',
+  //   'timeStamp': '',
+  //   'nonceStr': '',
+  //   'package': '',
+  //   'signType': '',
+  //   'paySign': '',
+  // };
 
   return "Payment success";
 });

@@ -128,11 +128,11 @@
   } from "../../utils";
   export default {
     onShow() {
+		this.orderId = '';
 		this.placeOrderError = false;
-		
 		this.getTotalPrice();
-		console.log(this.cart);
 		
+		console.log(this.cart);
 		console.log("Cart id: " + this.cartId);
     },
 	
@@ -171,6 +171,7 @@
 		totalQuantity: 0,
 		paymentSelection: 0,
 		placeOrderError: false,
+		orderId: '',
       };
     },
 	
@@ -255,9 +256,8 @@
 			},
 			
 			pay() {    // Make payment
-				Parse.Cloud.run('pay', {orderId : orderId, token: this.token}).then( r => {
+				Parse.Cloud.run('pay', {orderId : this.orderId, token: this.token, totalOrderFee: this.totalPrice, openId: this.openid}).then( r => {
 					console.log("Made payment successfully");
-					
 					
 				}).catch( e => {
 					console.log("Payment error: " + e);
@@ -467,7 +467,7 @@
 
 	
     computed: {
-		...mapState(['cart', 'cartId', 'token', 'order']),
+		...mapState(['cart', 'cartId', 'token', 'order', 'openid']),
 		
 		cart: {
 			get() {

@@ -7,6 +7,7 @@ const state = {
 			
 		},
 		hotItems:[],
+		
 		openId: '',
 		
 		// Items in the shopping cart
@@ -17,6 +18,7 @@ const state = {
 		
 		// Openid
 		openid:'',
+
 		
 		// Token
 		token: '',

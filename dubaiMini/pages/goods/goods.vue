@@ -12,7 +12,6 @@
 			<swiper class="screen-swiper round-dot"  :indicator-dots="true" :circular="true" :autoplay="true" interval="5000" duration="500" style="min-height: 600upx;">
 				<swiper-item v-for="(item, index) in swiperList" :key="index*1.4">
 					<image :src="item.url" mode="aspectFill" v-if="item.type == 'image'"></image>
-					<!-- <video :src="item.url" autoplay loop muted :show-play-btn="false" :controls="false" objectFit="cover" v-if="item.type == 'video'"></video> -->
 				</swiper-item>
 			</swiper>
 			<!-- Media gallery -->
@@ -26,9 +25,9 @@
 							<text class="cu-tag radius bg-gradual-pink  margin-right-xs">惊喜价</text>
 							<div class="sale_price" style="margin-left: 20upx;">¥ {{price}}</div>
 						</view>
-						<!-- <view class="text-gray text-sm">
+						<view class="text-gray text-sm">
 							库存还剩 {{stock}}
-						</view> -->
+						</view>
 					</view>				
 				</view>
 			</view>
@@ -143,23 +142,12 @@
 		
 		
 		<!-- 底部导航 -->
-		<view class="cu-bar bg-white tabbar border shop footer_bar solid-top">
-			<view class="action">
-				<view class="cuIcon-like"><view class="cu-tag badge">99</view></view>
-				收藏
-			</view>
-			
-			<button class="action" open-type="contact">
-				<view class="cuIcon-service text-green"><view class="cu-tag badge"></view></view>
-				客服
-			</button>
-			
+		<view class="cu-bar bg-white tabbar border shop footer_bar solid-top">			
 			<view class="bg-red submit" style="display: block;" @tap="showModal('bottomModal')">
 				<view class="text-white" style="margin-top: 20upx;">¥ {{purchaseNum * price}}</view>
 				<view class="text-white" style="">预定</view>
 			</view>
 		</view>
-
 		<!-- 底部导航 -->
 	</div>
 </template>
@@ -176,20 +164,18 @@ export default {
 		//获取页面传的参数
 		this.productID = this.$root.$mp.query.id;
 		this.skuID = "00000000" + this.productID;
-		this.printdata(this.skuID);
+		console.log("SKU id: ", this.skuID);
 		this.getItemDetail(this.skuID);
-		
 	},
 	
 	data() {
 		return {
 			product:'',
-			
 			x:{},
 			media_num: 0,
 			name: '',
 			price: 0,
-			stock:'',
+			stock: 0,
 			desc:'',
 			modalName: null,
 			productID: '',
@@ -220,10 +206,7 @@ export default {
 	
 	methods: {
 		pay(){
-			// Parse.Cloud.run('pay').then( r => {
-			// 	console.log('r' + JSON.stringify(r));
-			// }).catch( e => console.log('e' + JSON.stringify(e))	)
-			// this.launchGroupBuy('test1')
+
 		},
 		
 		scrollLeft(e){
@@ -233,15 +216,20 @@ export default {
 		async getItemDetail(sku){    // Get the detail of product from the api
 			const r = await post('/catalogapi/productDetails', {"param":{"productsku":sku,"token":this.token}});
 			this.product = r[0];
-			console.log(r);
+			console.log("Product detail: ", this.product);
+			
 			this.name = r[0].name;
 			this.price = r[0].price;
 			this.media_num = r[0].media_gallery_entries.length;
 			this.createGallery(r[0].media_gallery_entries);
 			this.getPackages(r[0].packages);
 			
-			console.log("Packages: ");
-			console.log(this.packages);
+			console.log("Packages: ", this.packages);
+			
+			// Set stock
+			if (this.product.custom_attributes[12].value[0] == true) {
+				this.stock = this.product.custom_attributes[12].value[1];
+			}
 		},
 		
 		createGallery(entry) {    // To create the gallery
@@ -299,16 +287,13 @@ export default {
 			
 			
 			// Get option id and name
+			let that = this;
+			
 			let optionId = this.optionSelection;
-			console.log(optionId);
 			let optionTitle = this.optionTitle;
-			
-			// Get image for modal
 			let pic = this.modalImage;
-			
 			let checkinDate = this.checkinDate;
 			
-			let that = this;
 			// Push the mutation to the server end
 			const ret = post('/checkoutapi/addToCart', {"param":{
 				"token":this.token,
@@ -329,7 +314,6 @@ export default {
 				// Ret format => {success: true, code: "200", message: "Add to cart successfully.", quote_id: "2158"}
 				console.log("Add to cart status: ");
 				console.log(r);
-				console.log(r[0].success);
 				
 				// Judge place order status
 				if (r[0].success === true) {
@@ -372,15 +356,13 @@ export default {
 		
 		selectPkg(id) {    // Selected package by the consumer
 			this.packageSelection = id;
-			console.log(this.packageSelection);
+			console.log("Package: ", this.packageSelection);
 		},
 		
 		selectOption(optionId, optionTitle) {
 			this.optionSelection = optionId;
 			this.optionTitle = optionTitle;
-			console.log("Option: ");
-			console.log(this.optionSelection);
-			console.log(this.optionTitle);
+			console.log("Option: ", this.optionSelection, " ", this.optionTitle);
 		},
 		
 		showModal(e) {    // Display modal
@@ -395,8 +377,7 @@ export default {
 		
 		jump(x){
 			// 在产品详情页面，想要看任何功能都要先登录
-			
-			// this.$store.commit('needLogin')
+			this.$store.commit('needLogin')
 			
 			uni.navigateTo({
 				url: `../${x}/${x}`,

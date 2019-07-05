@@ -171,7 +171,8 @@ const mutations = {
 	},
 	
 	setOpenId(state, openid) {
-		state.openid = openid
+		state.openid = openid;
+		console.log(openid);
 	},
 	
 	setToken(state, token) {
