@@ -49,7 +49,7 @@
 			</view>
 			
 			<view class="action text-gray" @click="jump('my')">
-				<view class="cuIcon-my"><view class="cu-tag badge"></view></view>
+				<view class="cuIcon-my"></view>
 				个人中心
 			</view>
 		</view>

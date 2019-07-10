@@ -4,7 +4,9 @@ const wechatConfig = require('../wechat-config')
 const { getAccessToken } = require('../tools/access-token')
 const q = require('../tools/request')
 let jsontoxml = require('jsontoxml')
+let xmltojson = require('xml-js');
 const uuid = require('uuid/v4');
+
 
 for (x in Publish){
   Parse.Cloud.define(x, Publish[x])
@@ -164,7 +166,9 @@ Parse.Cloud.define('pay', async req => {
     return sign;
   }
 
-  function payment() {
+  async function init_payment() {
+    var init_returns = {};
+
     // Generate a random 32-bit uuid
     var random = uuid().replace(/-/g, '');
 
@@ -172,6 +176,7 @@ Parse.Cloud.define('pay', async req => {
     let init_contents = {
       'service': 'pay.weixin.jspay',
       'mch_id': '131570000084',
+      'is_raw' : '1',
       'out_trade_no': oId,
       'body': 'TestPay',    // Products description
       'sub_openid': openId,    // Empty when testing
@@ -194,32 +199,29 @@ Parse.Cloud.define('pay', async req => {
     console.log("XML:");
     console.log(init_contents_xml);
 
-    //发送http post 请求, 获取返回参数
-    var appId = '';
-    var timeStamp = '';
-    var nonceStr = '';
-    var package = '';
-    var signType = '';
-    var paySign = '';
-    let r = axios.post('https://gateway.wepayez.com/pay/gateway', init_contents_xml).then( r => {
+    try {
+      //发送http post 请求, 获取返回参数
+      let r = await axios.post('https://gateway.wepayez.com/pay/gateway', init_contents_xml).then();
+
       console.log("success!!!");
       console.log(r.data);
-    }).catch( e => {
-      console.log(e);
-    });
+
+      // Convert xml data to json object
+      var options = {compact: true}
+      let init_result = xmltojson.xml2js(r.data, options).xml;
+
+      let pay_info = JSON.parse(init_result.pay_info._cdata)
+      // console.log("Pay info: ", pay_info);
+
+      return pay_info;
+
+    } catch(error) {
+      return {'code' : -1, 'message' : error};
+    }
   }
 
-  payment();
+  let pay_info = await init_payment();
 
-  // // Generate jsPaymentContent
-  // let jsPaymentContents = {
-  //   'appId': '',
-  //   'timeStamp': '',
-  //   'nonceStr': '',
-  //   'package': '',
-  //   'signType': '',
-  //   'paySign': '',
-  // };
 
-  return "Payment success";
+  return pay_info;
 });

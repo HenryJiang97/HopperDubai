@@ -47,7 +47,7 @@ export default {
 		console.log('开始检查登录情况');
 		this.$store.commit('needLogin');
 		this.wxProfile = this.$store.state.wxProfile
-		// this.printOpenId();
+		this.printOpenId();
 		console.log(this.token);
 	},
 	
@@ -141,6 +141,7 @@ export default {
 		getOrderCount() {
 			this.orderCount = Object.keys(this.order).length;
 		},
+		
 		
 
 		jump(pageName) {

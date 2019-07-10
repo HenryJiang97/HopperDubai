@@ -55,7 +55,7 @@ const mutations = {
 	
 	
 	deleteFromCart(state, x) {    // Delete products in cart
-		console.log(state.cart);
+		// console.log(state.cart);
 		delete state.cart[x.pkg + x.option + x.checkinDate];
 	},
 

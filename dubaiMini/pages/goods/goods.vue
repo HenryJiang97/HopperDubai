@@ -344,7 +344,7 @@ export default {
 					that.hideModal();
 					
 				} else {
-					that.addToCartStatus = r[0].message;
+					that.addToCartStatus = "预定失败";
 					console.log("Failed to add to cart");
 				}
 				

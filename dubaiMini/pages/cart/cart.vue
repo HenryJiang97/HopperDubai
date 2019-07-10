@@ -37,6 +37,7 @@
 									<button @click="deleteItem(x)" class="cu-btn round">删除</button>
 								</view> -->
 								
+								
 								<view class="text-gray text-sm">
 									<text class=" text-red  margin-right-xs"></text>¥ {{x.price}}</view>
 								<view class="text-grey text-sm"></view>
@@ -83,7 +84,7 @@
 						</view>
 					</view>
 
-					<view class="cu-card no-card">
+					<view v-if="totalQuantity != 0" class="cu-card no-card">
 						<view class="flex align-center">
 							
 							<view class="cu-item " >
@@ -99,7 +100,9 @@
 					
 					<view class="cu-bar bg-white tabbar border shop footer_bar">
 			
-					<view class="bg-red submit" @tap="pay()">立即支付</view>
+					<view class="bg-red submit" v-if="status == 0" @tap="pay()">立即支付</view>
+					<view class="bg-red submit" v-if="status == 1" @tap="pay()">支付成功</view>
+					<view class="bg-red submit" v-if="status == 2" @tap="pay()">支付失败</view>
 				</view>
 					
 				</view>
@@ -109,6 +112,10 @@
 		
 				<!-- 支付底栏 -->
 				<view class="cu-bar bg-white tabbar border shop foot">
+					<view>
+						<button @tap="emptyCart()" class="cu-btn round">清空购物车</button>
+					</view>
+					
 					<view class="margin-right" style="text-align: right; width: 50%;"> 实付款:<text class="margin-left text-xl">¥ {{totalPrice}} </text> </view>
 				
 					<view class="bg-red submit" @tap="addToOrder()">下单</view>
@@ -172,6 +179,7 @@
 		paymentSelection: 0,
 		placeOrderError: false,
 		orderId: '',
+		status: 0,
       };
     },
 	
@@ -186,7 +194,13 @@
 			
 			// Delete item in the cart
 			deleteItem(x) {
+				// Empty cart from the server
+				
+				// Update cart info in state
 				this.$store.commit('deleteFromCart', x);
+				
+				// Add the updated cart back to the server
+				
 				this.reload();
 			},
 			
@@ -209,60 +223,147 @@
 			},
 			
 			addToOrder() {
-				let that = this;
+				if (Object.keys(this.cart).length > 0) {
+					let that = this;
 				
-				// Place order to the server
-				const ret = post('/checkoutapi/placeorder', {"param":{
-						"token": this.token,
-						"cartId": this.cartId,
-						"paymentMethod": {
-							"method": "paybycredit"
-						 }
-					},
-				}).then(r => {
-					console.log(r);
-					
-					// Judge place order status
-					if (r[0].success == true) {
-						console.log("Successfully placed order");
-						that.placeOrderError = false;
+					// Place order to the server
+					const ret = post('/checkoutapi/placeorder', {"param":{
+							"token": this.token,
+							"cartId": this.cartId,
+							"paymentMethod": {
+								"method": "paybycredit"
+							 },
+							 
+						},
+					}).then(r => {
+						console.log(r);
+						that.orderId = r[0].orderid
 						
-						// Store the order to state
-						that.$store.commit('addToOrder', r[0].orderid);
-						that.reload();
-						that.emptyCart();
-						
-						// Show payment modal
-						this.showModal();
-						
-					} else {
-						that.placeOrderError = true;
-						console.log("下单失败");
-						that.emptyCart();
-						that.reload();
-					}
+						// Judge place order status
+						if (r[0].success == true) {
+							console.log("Successfully placed order");
+							that.placeOrderError = false;
+							
+							// Store the order to state
+							that.$store.commit('addToOrder', that.orderId);
+							that.reload();
+							that.emptyCart();
+							
+							// Show payment modal
+							this.showModal();
+							
+						} else {
+							that.placeOrderError = true;
+							console.log("下单失败");
+							// that.addAgain();
+							// that.reload();
+						}
 
-				}).catch(e => {
-					that.placeOrderError = true;
-					console.log("Error placing order:" + e);
-					that.emptyCart();
-					that.reload();
-				});
+					}).catch(e => {
+						that.placeOrderError = true;
+						console.log("Error placing order:" + e);
+						// that.emptyCart();
+						that.reload();
+					});
+				}
 			},
 			
 			
 			emptyCart() {
-				this.$store.commit('emptyCart');
+				// Request to empty cart in the server
+				const ret = post('/checkoutapi/clearcart', {"param":{
+						"token": this.token,
+						"cartId": this.cartId,
+					},
+					
+				}).then( r => {
+					console.log(r);
+					
+					if (r[0].success == true) {
+						this.$store.commit('emptyCart');
+						this.reload();
+					} else {
+						console.log("Cannot empty cart!");
+					}
+					
+				}).catch( e => {
+					console.log("Error emptying cart!");
+				})
+			},
+			
+			addAgain() {
+				let that = this;
+				
+				// Request to empty cart in the server
+				const ret = post('/checkoutapi/clearcart', {"param":{
+						"token": this.token,
+						"cartId": this.cartId,
+					},
+					
+				}).then( r => {
+					console.log(r);
+					
+					if (r[0].success == true) {
+						that.addToOrder();
+						that.reload();
+					} else {
+						console.log("Cannot empty cart!");
+						
+					}
+					
+				}).catch( e => {
+					console.log("Error emptying cart!");
+				})
 			},
 			
 			pay() {    // Make payment
-				Parse.Cloud.run('pay', {orderId : this.orderId, token: this.token, totalOrderFee: this.totalPrice, openId: this.openid}).then( r => {
-					console.log("Made payment successfully");
+			let that = this;
+		
+			uni.showLoading({
+				title: '加载中...',
+				mask: true	
+			});
+			
+			Parse.Cloud.run('pay', {orderId : this.orderId, token: this.token, totalOrderFee: this.totalPrice, openId: this.openid}).then( r => {
+				
+				console.log(r);		
 					
-				}).catch( e => {
-					console.log("Payment error: " + e);
-				})				
-			},
+				uni.hideLoading();
+				
+				// Request Wechat Payment
+				wx.requestPayment(
+					{...r,
+					'success':function(res){
+						console.log(res);
+						
+						// Show a pop-up window
+						uni.showToast({
+							title: "支付成功",
+						})
+						
+						
+						that.ifPaid[that.orderId] = true;
+						
+						that.status = 1;
+
+						that.reload();
+						
+					},
+					'fail':function(res){
+						console.log("Payment failure", res);
+						
+						that.status = 2;
+					},
+					'complete':function(res){
+						
+					}
+				});
+				
+				
+			}).catch( e => {
+				console.log("Payment error: " + e);
+			})
+		},
 			
 		
 			// Navigate to certain page
@@ -466,8 +567,9 @@
     },
 
 	
+	
     computed: {
-		...mapState(['cart', 'cartId', 'token', 'order', 'openid']),
+		...mapState(['cart', 'cartId', 'token', 'order', 'openid', 'ifPaid']),
 		
 		cart: {
 			get() {
@@ -486,7 +588,9 @@
 					Prise = Prise + this.listData[i].retail_price * this.listData[i].number;
 				}
 			}
+			
 			return Prise;
+			
 		}
     },
   };

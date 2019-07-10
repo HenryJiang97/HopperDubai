@@ -37,10 +37,6 @@
 							<view class="content" style="margin-left: 0;">
 								<view class="text-bold">{{item1.name}}</view>
 							</view>
-							<!-- <view v-if="listDataNum[index]" class="action"> -->
-								<!-- <view class="text-grey text-xs"></view> -->
-								<!-- <view class="cu-tag  bg-grey sm">{{listDataNum[index1].length}}</view> -->
-							<!-- </view> -->
 						</view>
 						
 					</view>

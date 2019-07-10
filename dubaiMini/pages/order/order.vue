@@ -60,9 +60,16 @@
 </div>
 </template>
 
+<!-- <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script> -->
 <script>
 import Parse from '../../common/parse.js'
 import { mapState } from 'vuex'
+// import WX from 'weixin-js-sdk'
+
+// let WX = require('weixin-js-sdk')
+
+// var wx = require('weixin-js-sdk')
+
 
 export default {
 	data() {
@@ -71,6 +78,7 @@ export default {
 			totalOrderPrice: {},
 			TabCur: 0,
 			scrollLeft: 0,
+			isRouterAlive: true,    // Used to reload page
 		};
 	},
 	onLoad() {
@@ -88,9 +96,16 @@ export default {
 	},
 	
 	methods: {
+		reload () {
+			this.isRouterAlive = false
+			this.$nextTick(function () {
+				this.isRouterAlive = true
+			})
+		},
+		
 		getOrderLen(){
 			for (var key in this.order) {
-				this.orderLen[key] = Object.keys(this.order[key]).length - 1;
+				this.orderLen[key] = Object.keys(this.order[key]).length;
 			}
 		},
 		
@@ -104,11 +119,50 @@ export default {
 				}
 				this.totalOrderPrice[key] = price;
 			}
+			
 		},
 		
 		pay(orderId) {    // Make payment
+			let that = this;
+		
+			uni.showLoading({
+				title: '加载中...',
+				mask: true	
+			});
+			
 			Parse.Cloud.run('pay', {orderId : orderId, token: this.token, totalOrderFee: this.totalOrderPrice[orderId], openId: this.openid}).then( r => {
-				console.log(r);
+				
+				console.log(r);		
+					
+				uni.hideLoading();
+				
+				// Request Wechat Payment
+				wx.requestPayment(
+					{...r,
+					'success':function(res){
+						console.log(res);
+						
+						// Show a pop-up window
+						uni.showToast({
+							title: "支付成功",
+						})
+						
+						
+						that.ifPaid[orderId] = true;
+						that.reload();
+						
+					},
+					'fail':function(res){
+						console.log("Payment failure", res);
+						uni.showToast({
+							title: "付款失败",
+						}) 
+					},
+					'complete':function(res){
+						
+					}
+				});
+				
 				
 			}).catch( e => {
 				console.log("Payment error: " + e);
