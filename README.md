@@ -13,14 +13,10 @@ This application can run on multiple platforms: iOS, Android, Web, Wechat Mini A
 
 **Screen shots:**
 
-Categories:
-![Categories](https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.18.53%20PM.png)
+![Categories](https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.18.53%20PM.png =250x)
 
-Package selections:
-![Package selections](https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.16.49%20PM.png)
+![Package selections](https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.16.49%20PM.png =250x)
 
-Package detail:
 ![Package detail](https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.17.28%20PM.png)
 
-Package types:
 ![Package types](https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.17.48%20PM.png)
