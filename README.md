@@ -1,4 +1,4 @@
-## Hopper Dubai mobile application
+## Hopper Dubai cross-platform application
 
 This application can run on multiple platforms: iOS, Android, Web, Wechat Mini App. Made for hopperdubai.com to expand their e-commerce service on traveling in dubai. Target customers are from China so that a mini app can be a good solution which has a lower threshold for the public.
 
