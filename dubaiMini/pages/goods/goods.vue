@@ -181,7 +181,6 @@ export default {
 			productID: '',
 			skuID: '',    // Product skuid
 			cartId: '',
-			groupBuys:[],
 			swiperList: [],
 			packages: [],
 			packageSelection: null,    // Package id, also name as timeslot

@@ -5,82 +5,6 @@
 			<block slot="content">{{categoryName}}</block>
 		</cu-custom>
 
-		<!-- 工具栏 -->
-		
-		<!-- <div class="cu-bar padding-lr ">
-			<div class="item">
-				评论<text class=" margin-left-xs"></text>
-			</div>
-			<div class="item">
-				价格<text class="cuIcon-unfold margin-left-xs"></text>
-			</div>
-			<div class="item" @tap="showModal" data-target="DrawerModalR">
-				筛选<text class="cuIcon-filter margin-left-xs"></text>
-			</div>
-			
-		</div> -->
-		<!-- 工具栏 -->
-		
-		
-		
-		<!-- 过滤器 -->
-		<!-- <view class="cu-modal drawer-modal justify-end" :class="modalName=='DrawerModalR'?'show':''" @tap="hideModal">
-			<view class="cu-dialog basis-xl" @tap.stop="" :style="[{top:CustomBar+'px',height:'calc(100vh - ' + CustomBar + 'px)'}]">
-				
-				<view class="cu-list menu text-left">
-					
-					<view class="cu-item" >
-						<view class="content padding-tb-sm">
-							<view>
-								<text class=" text-blue margin-right-xs"></text>价格区间</view>
-							
-							<view class="text-gray text-sm flex">
-								<input class="bg-gray round padding-lr margin-right" type="text" value="" />
-								—
-								<input class="bg-gray round padding-lr margin-left" type="text" value="" />
-							</view>
-						</view>
-						
-					</view>
-					
-					<view class="cu-item">
-						<view class="content padding-tb-sm">
-							<view>
-								<text class=" text-blue margin-right-xs"></text>品牌</view>
-							
-							<view class="text-gray grid text-sm  text-center col-3">
-								<view v-for="(x,idx) in 6" :key="idx" class="text-black" style="margin-top: 20upx;">
-									<text class="round padding-lr-sm padding-tb-xs bg-gray ">习近平</text>
-								</view>
-								
-							</view>
-						</view>
-						
-					</view>
-					
-					<view class="cu-item">
-						<view class="content padding-tb-sm">
-							<view>
-								<text class=" text-blue margin-right-xs"></text>材质</view>
-							
-							<view class="text-gray grid text-sm  text-center col-3">
-								<view v-for="(x,idx) in 6" :key="idx" class="text-black" style="margin-top: 20upx;">
-									<text class="round padding-lr-sm padding-tb-xs bg-gray ">特朗普</text>
-								</view>
-								
-							</view>
-						</view>
-						
-					</view>
-					
-				</view>
-				
-				
-				
-			</view>
-		</view> -->
-		<!-- 过滤器 -->
-		
 
 		<!-- #ifndef MP-BAIDU -->
 		<scroll-view class="list"  scroll-y @scrolltolower="loadMore(idx)" >
@@ -93,18 +17,6 @@
 					</view>
 				</view>
 			</view>
-			
-			<!-- <view class="bg-white padding" >
-				<view class="grid margin-bottom text-center col-2">
-					<SingleItem  v-for="(item,indexs) in goodsList" 
-					:key="indexs" 
-					:item="item" style="width:50%;"></SingleItem>	
-				</view>
-			</view> -->
-
-			<!-- <view class="uni-tab-bar-loading">
-				<view class="loading-more">{{ loadingText }}</view>
-			</view> -->
 		</scroll-view>
 		<!-- #endif -->
 	</div>
@@ -182,24 +94,7 @@ export default {
 				let promise = get(`/products/${x.sku}`);
 				return promise;
 			});
-			console.log('全部的请求' + allPromise);
-
-			//       this.navData = navdata.navData;
-			//       this.currentNav = navdata.currentNav;
-			//
-			//       for (let i = 0; i < this.navData.length; i++) {
-			//         const id = this.navData[i].id;
-			//         if (id == this.currentNav.id) {
-			//           this.nowIndex = i;
-			//         }
-			//       }
-			//
-			//       //需要让导航滚动到可见区域
-			//       if (this.nowIndex > 4) {
-			//         this.scrollLeft = this.nowIndex * 60;
-			//       } else {
-			//         this.scrollLeft = 0;
-			//       }
+			console.log('全部的请求' + allPromise);	
 
 			Promise.all(allPromise)
 				.then(r => {

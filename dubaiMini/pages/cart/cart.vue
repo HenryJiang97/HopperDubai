@@ -194,12 +194,8 @@
 			
 			// Delete item in the cart
 			deleteItem(x) {
-				// Empty cart from the server
-				
 				// Update cart info in state
 				this.$store.commit('deleteFromCart', x);
-				
-				// Add the updated cart back to the server
 				
 				this.reload();
 			},
@@ -475,12 +471,9 @@
           console.log(this.listData[index].textStyle1);
           // this.listData = this.listData;
         }
-        // if (Math.abs(this.X) > Math.abs(this.Y) && this.X > 20) {
-        //   this.scrollflag = false;
-        // } else if (Math.abs(this.X) > Math.abs(this.Y) && this.X < 20) {
-        //   console.log("right 2 left");
-        // }
-      },
+
+	  },
+	  
       endMove(e) {
         var index = e.currentTarget.dataset.index;
         if (this.X > -50) {
@@ -494,79 +487,8 @@
           this.listData[index].textStyle = `transform:translateX(${this.tranX}rpx);`;
           this.listData[index].textStyle1 = `transform:translateX(${this.tranX1}rpx);`;
         }
-      },
-      async orderDown() {
-        if (this.Listids.length == 0) {
-          wx.showToast({
-            title: "请选择商品",
-            icon: "none",
-            duration: 1500
-          });
-          return false;
-        }
-        // 去掉数组中空的false的
-        var newgoodsid = [];
-        for (let i = 0; i < this.Listids.length; i++) {
-          const element = this.Listids[i];
-          if (element) {
-            newgoodsid.push(element);
-          }
-        }
-        var goodsId = newgoodsid.join(",");
-        const data = await post("/order/submitAction", {
-          goodsId: goodsId,
-          openId: this.openId,
-          allPrise: this.allPrise
-        });
-        if (data) {
-          wx.navigateTo({
-            url: "/pages/order/order"
-          });
-        }
-      },
-      async delGoods(id, index) {
-        var _this = this;
-        wx.showModal({
-          title: "",
-          content: "是否要删除该商品",
-          success: function (res) {
-            if (res.confirm) {
-
-              _this.Listids.splice(index, 1);
-              const data = get("/cart/deleteAction", {
-                id: id
-              }).then(() => {
-                _this.getListData();
-              });
-            } else if (res.cancel) {
-              console.log("用户点击取消");
-              //滑动之前先初始化样式数据
-              _this.initTextStyle();
-            }
-          }
-        });
-      },
-      async getListData() {
-        const data = await get("/cart/cartList", {
-          openId: this.openId
-        });
-        for (var i = 0; i < data.data.length; i++) {
-          data.data[i].textStyle = "";
-          data.data[i].textStyle1 = "";
-        }
-        this.listData = data.data;
-      },
-      change(e) {},
-      changeColor(index, id) {
-        if (this.Listids[index]) {
-          this.$set(this.Listids, index, false);
-        } else {
-          this.$set(this.Listids, index, id);
-        }
-      }
-    },
-
-	
+	  },
+	},
 	
     computed: {
 		...mapState(['cart', 'cartId', 'token', 'order', 'openid', 'ifPaid']),

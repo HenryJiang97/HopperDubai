@@ -63,7 +63,6 @@
 				detailData:[],
 				listCur: 0,
 				listDataNum: {},
-				token: "vuh1yve09x8d4uo4oly1ofab1suy5gdb",
 			};
 		},
 		onLoad() {
@@ -88,17 +87,6 @@
 				this.detailData = this.listData.filter( x => x.id === id )[0] // 过滤出当前点击的那个子分类
 				console.log(index)
 				
-				
-
-				// let promises = this.detailData.subcategories.map( x => {
-				// 	return post('/catalogapi/getCategoryProducts', {"param":{"id":x.id,"token":this.token}}).then()
-				// })
-				// // console.log(promises)
-				// Promise.all(promises).then(r => {
-				// 	this.listDataNum[index] = r
-				// });
-				// 
-				// console.log(this.listDataNum[index]);
 			},
 			
 			async getCategories(){// 通过Top Menu api获取分类信息，请求分类数据
@@ -135,6 +123,7 @@
 					}
 					this.load = false
 				}
+				
 				let scrollTop = e.detail.scrollTop + 10;
 				for (let i = 0; i < this.list.length; i++) {
 					if (scrollTop > this.list[i].top && scrollTop < this.list[i].bottom) {

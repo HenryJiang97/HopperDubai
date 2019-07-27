@@ -65,7 +65,6 @@
 import amapFile from '../../utils/amap-wx';
 import { get ,post} from '../../utils';
 import { mapState, mapMutations } from 'vuex';
-import fake from '../../fakedata/home.js';
 import SingleItem from '../../components/item'
 import Parse from '../../common/parse.js'
 
@@ -84,7 +83,6 @@ export default {
 		this.wxProfile = this.$store.state.wxProfile
 		
 		this.getItemsInCart();
-		this.getItemsInCart();
 	},
 	
 	computed:{
@@ -92,21 +90,14 @@ export default {
 	},
 	data() {
 		return {
-			
 			gridCol: 4,
 			gridBorder: true,
 			iconList: [],
 			swiperList: [],
+			hostItems: [], // Host items
 
-			langs: ['en-US', 'zh-CN'],
-			banner: [],
-			channel: [],
-			
-			hostItems: [], // 最热产品
-			topicList: [],
 			newCategoryList: [],
 			itemsInCart: 0,
-			
 		};
 	},
 	
@@ -173,19 +164,6 @@ export default {
 			});
 		},
 		
-		changeLang(lang) {
-			console.log('修改语言' + lang);
-			this.$i18n.locale = lang;
-		},
-		
-		demonote() {
-			uni.showModal({
-				title: 'hihi',
-				content: 'haha',
-				showCancel: false
-			});
-		},
-		
 		goodsDetail(id) {
 			wx.navigateTo({
 				url: '/pages/goods/goods?id=' + id
@@ -209,30 +187,7 @@ export default {
 				});
 			}
 		},
-		
-		topicdetail(id) {
-			wx.navigateTo({
-				url: '/pages/topicdetail/topicdetail?id=' + id
-			});
-		},
-		
-		totopic() {
-			wx.navigateTo({
-				url: '/pages/topic/topic'
-			});
-		},
-		
-		tobrandList() {
-			wx.navigateTo({
-				url: '/pages/brandlist/brandlist'
-			});
-		},
-		
-		branddetail(id) {
-			wx.navigateTo({
-				url: '/pages/branddetail/branddetail?id=' + id
-			});
-		}
+
 	},
 	
 	created() {
