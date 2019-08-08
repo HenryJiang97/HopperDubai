@@ -216,6 +216,19 @@ export default {
 			const r = await post('/catalogapi/productDetails', {"param":{"productsku":sku,"token":this.token}});
 			this.product = r[0];
 			console.log("Product detail: ", this.product);
+
+			// Judge if the product is available
+			if (Object.keys(this.product).length <= 1) {
+				console.log("Invalid product");
+
+				uni.showToast({
+					title: "商品不可用",
+					duration: 2000
+				});
+
+
+			}
+
 			
 			this.name = r[0].name;
 			this.price = r[0].price;

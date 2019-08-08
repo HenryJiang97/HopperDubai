@@ -15,7 +15,7 @@ const service = axios.create({
   timeout: 1000 * 60,
   headers: {
     'content-type': 'application/json',// 默认值，
-    'Authorization': 'Bearer zek2glksyljjumj2zwavuk715e31sgqf'
+    'Authorization': 'Bearer od23y58rrnh53s2qmqlu4nfeg731qka4'
   }
 })
 
