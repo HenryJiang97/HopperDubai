@@ -33,7 +33,7 @@ module.exports = {
         let reqUrl = '/securepay'
 
         if (reqUrl == '/securepay') {
-            let token = '5cbfb079f15b150122261c8537086d77a'
+            let token = 'od23y58rrnh53s2qmqlu4nfeg731qka4'
             let nowTime = new Date()
             let randomReference = 'test_' + nowTime.getTime()
 
