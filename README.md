@@ -13,4 +13,18 @@ This application can run on multiple platforms: iOS, Android, Web, Wechat Mini A
 
 **Screen shots:**
 
-<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.18.53%20PM.png" alt="drawing" width="200"/> <img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.16.49%20PM.png" alt="drawing" width="200"/> <img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.17.28%20PM.png" alt="drawing" width="200"/> <img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.17.48%20PM.png" alt="drawing" width="200"/> <img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-08-08%20at%2012.07.55%20PM.png" alt="drawing" width="200"/> 
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-08-09%20at%205.13.53%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.18.53%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.16.49%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.17.28%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-07-27%20at%208.17.48%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-08-09%20at%205.17.29%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-08-09%20at%205.24.38%20PM.png" alt="drawing" width="250"/> 
+
+<img src="https://github.com/HenryJiang97/HopperDubai/blob/master/Screenshots/Screen%20Shot%202019-08-08%20at%2012.07.55%20PM.png" alt="drawing" width="250"/> 
